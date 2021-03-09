@@ -1,0 +1,505 @@
+version: "3.9"
+services:
+  couchbase1:
+    tty: true
+    stdin_open: true
+    container_name: couchbase1
+    image: couchbase/server
+    restart: always
+    volumes:
+      - couchbase1-data:/var/lib/couchbase1/data
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.11
+    ports:
+      - 8091:8091
+      - 8092:8092
+      - 8093:8093
+      - 8094:8094
+      - 11210:11210
+    ulimits:
+      nproc: 65535
+      core:
+        soft: 100000000
+        hard: 100000000
+      memlock:
+        soft: 100000000
+        hard: 100000000
+      nofile:
+        soft: 40960
+        hard: 40960
+  couchbase2:
+    tty: true
+    stdin_open: true
+    restart: always
+    container_name: couchbase2
+    image: couchbase/server
+    volumes:
+      - couchbase2-data:/var/lib/couchbase2/data
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.12
+    links:
+      - couchbase1
+    depends_on:
+      - couchbase1
+    ports:
+      - 18091:8091
+      - 18092:8092
+      - 18093:8093
+      - 18094:8094
+      - 21210:11210
+  couchbase3:
+    tty: true
+    stdin_open: true
+    restart: always
+    container_name: couchbase3
+    image: couchbase/server
+    volumes:
+      - couchbase3-data:/var/lib/couchbase3/data
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.13
+    links:
+      - couchbase2
+    depends_on:
+      - couchbase2
+    ports:
+      - 28091:8091
+      - 28092:8092
+      - 28093:8093
+      - 28094:8094
+      - 31210:11210
+    ulimits:
+      nproc: 65535
+      core:
+        soft: 100000000
+        hard: 100000000
+      memlock:
+        soft: 100000000
+        hard: 100000000
+      nofile:
+        soft: 40960
+        hard: 40960
+  consul:
+    image: consul
+    restart: always
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    expose:
+      - "8500"
+    command: agent -server -bootstrap -ui -client=0.0.0.0
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.14
+  gateway:
+    restart: always
+    depends_on:
+      - consul
+    image: api-gateway
+    build:
+      context: .
+      dockerfile: Dockerfile-Gateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.15
+    ports:
+      - "5001:5001"
+    expose:
+      - "5001"
+    links:
+      - consul
+  user-api-1:
+    restart: always
+    depends_on:
+      - consul
+      - couchbase1
+      - couchbase2
+      - couchbase3
+      - es01
+      - es02
+      - es03
+    image: user-api
+    build:
+      context: .
+      dockerfile: Dockerfile-User-API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_URL=http://user-api-1:5011
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.20
+    ports:
+      - "5011:5011"
+    expose:
+      - "5011"
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 75M
+  user-api-2:
+    restart: always
+    depends_on:
+      - consul
+      - couchbase1
+      - couchbase2
+      - couchbase3
+      - es01
+      - es02
+      - es03
+    image: user-api
+    build:
+      context: .
+      dockerfile: Dockerfile-User-API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_URL=http://user-api-2:5012
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.21
+    ports:
+      - "5012:5011"
+    expose:
+      - "5011"
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 75M
+  advertisement-api-1:
+    restart: always
+    depends_on:
+      - consul
+      - couchbase1
+      - couchbase2
+      - couchbase3
+      - es01
+      - es02
+      - es03
+    image: advertisement-api
+    build:
+      context: .
+      dockerfile: Dockerfile-Advertisement-API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_URL=http://advertisement-api-1:5021
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.30
+    ports:
+      - "5021:5021"
+    expose:
+      - "5021"
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 75M
+  advertisement-api-2:
+    restart: always
+    depends_on:
+      - consul
+      - couchbase1
+      - couchbase2
+      - couchbase3
+      - es01
+      - es02
+      - es03
+    image: advertisement-api
+    build:
+      context: .
+      dockerfile: Dockerfile-Advertisement-API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_URL=http://advertisement-api-1:5022
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.31
+    ports:
+      - "5022:5022"
+    expose:
+      - "5022"
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 75M
+  catalog-api-1:
+    restart: always
+    depends_on:
+      - consul
+      - couchbase1
+      - couchbase2
+      - couchbase3
+      - es01
+      - es02
+      - es03
+    image: catalog-api
+    build:
+      context: .
+      dockerfile: Dockerfile-Catalog-API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_URL=http://catalog-api-1:5031
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.41
+    ports:
+      - "5031:5031"
+    expose:
+      - "5031"
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 75M
+  catalog-api-2:
+    restart: always
+    depends_on:
+      - consul
+      - couchbase1
+      - couchbase2
+      - couchbase3
+      - es01
+      - es02
+      - es03
+    image: catalog-api
+    build:
+      context: .
+      dockerfile: Dockerfile-Catalog-API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_URL=http://catalog-api-2:5032
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.42
+    ports:
+      - "5032:5032"
+    expose:
+      - "5032"
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 75M
+  location-api-1:
+    restart: always
+    depends_on:
+      - consul
+      - couchbase1
+      - couchbase2
+      - couchbase3
+      - es01
+      - es02
+      - es03
+    image: location-api
+    build:
+      context: .
+      dockerfile: Dockerfile-Location-API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_URL=http://location-api-1:5041
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.51
+    ports:
+      - "5041:5041"
+    expose:
+      - "5041"
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 75M
+  location-api-2:
+    restart: always
+    depends_on:
+      - consul
+      - couchbase1
+      - couchbase2
+      - couchbase3
+      - es01
+      - es02
+      - es03
+    image: location-api
+    build:
+      context: .
+      dockerfile: Dockerfile-Location-API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_URL=http://location-api-2:5042
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.52
+    ports:
+      - "5042:5042"
+    expose:
+      - "5042"
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 75M
+  media-api-1:
+    restart: always
+    depends_on:
+      - consul
+      - couchbase1
+      - couchbase2
+      - couchbase3
+      - es01
+      - es02
+      - es03
+    image: media-api
+    build:
+      context: .
+      dockerfile: Dockerfile-Media-API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_URL=http://media-api-1:5051
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.61
+    ports:
+      - "5051:5051"
+    expose:
+      - "5051"
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 75M
+  media-api-2:
+    restart: always
+    depends_on:
+      - consul
+      - couchbase1
+      - couchbase2
+      - couchbase3
+      - es01
+      - es02
+      - es03
+    image: media-api
+    build:
+      context: .
+      dockerfile: Dockerfile-Media-API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_URL=http://media-api-2:5052
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.62
+    ports:
+      - "5052:5052"
+    expose:
+      - "5052"
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 75M
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    container_name: es01
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - hermes-network
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    container_name: es02
+    environment:
+      - node.name=es02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    ports:
+      - 9201:9201
+    networks:
+      - hermes-network
+  es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    container_name: es03
+    environment:
+      - node.name=es03
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data03:/usr/share/elasticsearch/data
+    ports:
+      - 9202:9202
+    networks:
+      - hermes-network
+  kib01:
+    depends_on:
+      - es01
+      - es02
+      - es03
+    image: docker.elastic.co/kibana/kibana:7.10.2
+    container_name: kib01
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://es01:9200
+      ELASTICSEARCH_HOSTS: http://es01:9200
+    networks:
+      - hermes-network
+networks:
+  hermes-network:
+    name: hermes-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.101.0/24
+volumes:
+  couchbase1-data:
+  couchbase2-data:
+  couchbase3-data:
+  data01:
+    driver: local
+  data02:
+    driver: local
+  data03:
+    driver: local

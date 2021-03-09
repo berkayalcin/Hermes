@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.Gateway", "Hermes.Gateway\Hermes.Gateway.csproj", "{1F2455F1-1E61-461B-9D43-094F83E88F88}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFiles", "{4CC20CD7-12D0-44C9-903F-E4A328DFE1E7}"
+ProjectSection(SolutionItems) = preProject
+	docker-compose.yml = docker-compose.yml
+	Dockerfile-Gateway = Dockerfile-Gateway
+	Dockerfile-User-API = Dockerfile-User-API
+	Dockerfile-Advertisement-API = Dockerfile-Advertisement-API
+	Dockerfile-Catalog-API = Dockerfile-Catalog-API
+	Dockerfile-Location-API = Dockerfile-Location-API
+	Dockerfile-Media-API = Dockerfile-Media-API
+EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.User", "Hermes.API.User\Hermes.API.User.csproj", "{30802F99-CCB8-4B53-8A42-9E88F0DA3D6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.Advertisement", "Hermes.API.Advertisement\Hermes.API.Advertisement.csproj", "{F2FF38E3-93AA-43F7-966D-3962D95FD06C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.Catalog", "Hermes.API.Catalog\Hermes.API.Catalog.csproj", "{487F9D3B-2CD5-4F44-ACC2-B1796D29C426}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.Media", "Hermes.API.Media\Hermes.API.Media.csproj", "{49AFE79E-EBEA-42C1-B522-47FE55371EEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.Location", "Hermes.API.Location\Hermes.API.Location.csproj", "{3A416034-F838-4DFC-82A7-A4E39DC5580C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F2455F1-1E61-461B-9D43-094F83E88F88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F2455F1-1E61-461B-9D43-094F83E88F88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F2455F1-1E61-461B-9D43-094F83E88F88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F2455F1-1E61-461B-9D43-094F83E88F88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30802F99-CCB8-4B53-8A42-9E88F0DA3D6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30802F99-CCB8-4B53-8A42-9E88F0DA3D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30802F99-CCB8-4B53-8A42-9E88F0DA3D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30802F99-CCB8-4B53-8A42-9E88F0DA3D6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2FF38E3-93AA-43F7-966D-3962D95FD06C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2FF38E3-93AA-43F7-966D-3962D95FD06C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2FF38E3-93AA-43F7-966D-3962D95FD06C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2FF38E3-93AA-43F7-966D-3962D95FD06C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{487F9D3B-2CD5-4F44-ACC2-B1796D29C426}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{487F9D3B-2CD5-4F44-ACC2-B1796D29C426}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{487F9D3B-2CD5-4F44-ACC2-B1796D29C426}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{487F9D3B-2CD5-4F44-ACC2-B1796D29C426}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49AFE79E-EBEA-42C1-B522-47FE55371EEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49AFE79E-EBEA-42C1-B522-47FE55371EEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49AFE79E-EBEA-42C1-B522-47FE55371EEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49AFE79E-EBEA-42C1-B522-47FE55371EEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A416034-F838-4DFC-82A7-A4E39DC5580C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A416034-F838-4DFC-82A7-A4E39DC5580C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A416034-F838-4DFC-82A7-A4E39DC5580C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A416034-F838-4DFC-82A7-A4E39DC5580C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+EndGlobal
