@@ -1,0 +1,17 @@
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+EXPOSE 4991:4991
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY Hermes.API.Notification/Hermes.API.Notification.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY Hermes.API.Notification/ .
+RUN dotnet publish -c Release -o /app/out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+WORKDIR /app
+COPY --from=build-env /app/out .
+ENTRYPOINT ["dotnet", "Hermes.API.Notification.dll"]

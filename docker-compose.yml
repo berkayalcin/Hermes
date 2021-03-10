@@ -405,7 +405,67 @@ services:
     ports:
       - "5052:5052"
     expose:
-      - "5052"
+      - "5062"
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 75M
+  notification-api-1:
+    restart: always
+    depends_on:
+      - consul
+      - couchbase1
+      - couchbase2
+      - couchbase3
+      - es01
+      - es02
+      - es03
+    image: notification-api
+    build:
+      context: .
+      dockerfile: Dockerfile-Notification-API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_URL=http://notification-api-1:4991
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.71
+    ports:
+      - "4991:4991"
+    expose:
+      - "4991"
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 75M
+  notification-api-2:
+    restart: always
+    depends_on:
+      - consul
+      - couchbase1
+      - couchbase2
+      - couchbase3
+      - es01
+      - es02
+      - es03
+    image: notification-api
+    build:
+      context: .
+      dockerfile: Dockerfile-Notification-API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SERVICE_URL=http://notification-api-2:4992
+    networks:
+      hermes-network:
+        ipv4_address: 172.16.101.72
+    ports:
+      - "4992:4992"
+    expose:
+      - "4992"
     deploy:
       resources:
         limits:

@@ -12,6 +12,7 @@ ProjectSection(SolutionItems) = preProject
 	Dockerfile-Location-API = Dockerfile-Location-API
 	Dockerfile-Media-API = Dockerfile-Media-API
 	.gitignore = .gitignore
+	Dockerfile-Notification-API = Dockerfile-Notification-API
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.User", "Hermes.API.User\Hermes.API.User.csproj", "{30802F99-CCB8-4B53-8A42-9E88F0DA3D6E}"
@@ -23,6 +24,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.Media", "Hermes.API.Media\Hermes.API.Media.csproj", "{49AFE79E-EBEA-42C1-B522-47FE55371EEA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.Location", "Hermes.API.Location\Hermes.API.Location.csproj", "{3A416034-F838-4DFC-82A7-A4E39DC5580C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.Notification", "Hermes.API.Notification\Hermes.API.Notification.csproj", "{4B1A0753-A4B2-4207-AF4E-3F0F06DB2115}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +57,10 @@ Global
 		{3A416034-F838-4DFC-82A7-A4E39DC5580C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A416034-F838-4DFC-82A7-A4E39DC5580C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A416034-F838-4DFC-82A7-A4E39DC5580C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B1A0753-A4B2-4207-AF4E-3F0F06DB2115}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B1A0753-A4B2-4207-AF4E-3F0F06DB2115}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B1A0753-A4B2-4207-AF4E-3F0F06DB2115}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B1A0753-A4B2-4207-AF4E-3F0F06DB2115}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
