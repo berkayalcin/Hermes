@@ -7,7 +7,7 @@ services:
     image: couchbase/server
     restart: always
     volumes:
-      - couchbase1-data:/var/lib/couchbase1/data
+      - couchbase1-data:/data/couchbase1
     networks:
       hermes-network:
         ipv4_address: 172.16.101.11
@@ -35,7 +35,7 @@ services:
     container_name: couchbase2
     image: couchbase/server
     volumes:
-      - couchbase2-data:/var/lib/couchbase2/data
+      - couchbase2-data:/data/couchbase2
     networks:
       hermes-network:
         ipv4_address: 172.16.101.12
@@ -56,7 +56,7 @@ services:
     container_name: couchbase3
     image: couchbase/server
     volumes:
-      - couchbase3-data:/var/lib/couchbase3/data
+      - couchbase3-data:/data/couchbase3
     networks:
       hermes-network:
         ipv4_address: 172.16.101.13
@@ -139,39 +139,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 150M
+          cpus: '0.50'
+          memory: 50M
         reservations:
-          memory: 75M
-  user-api-2:
-    restart: always
-    depends_on:
-      - consul
-      - couchbase1
-      - couchbase2
-      - couchbase3
-      - es01
-      - es02
-      - es03
-    image: user-api
-    build:
-      context: .
-      dockerfile: Dockerfile-User-API
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - SERVICE_URL=http://user-api-2:5012
-    networks:
-      hermes-network:
-        ipv4_address: 172.16.101.21
-    ports:
-      - "5012:5011"
-    expose:
-      - "5011"
-    deploy:
-      resources:
-        limits:
-          memory: 150M
-        reservations:
-          memory: 75M
+          memory: 20M
   advertisement-api-1:
     restart: always
     depends_on:
@@ -199,9 +170,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 150M
+          cpus: '0.50'
+          memory: 50M
         reservations:
-          memory: 75M
+          memory: 20M
   advertisement-api-2:
     restart: always
     depends_on:
@@ -229,9 +201,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 150M
+          cpus: '0.50'
+          memory: 50M
         reservations:
-          memory: 75M
+          memory: 20M
   catalog-api-1:
     restart: always
     depends_on:
@@ -259,9 +232,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 150M
+          cpus: '0.50'
+          memory: 50M
         reservations:
-          memory: 75M
+          memory: 20M
   catalog-api-2:
     restart: always
     depends_on:
@@ -289,9 +263,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 150M
+          cpus: '0.50'
+          memory: 50M
         reservations:
-          memory: 75M
+          memory: 20M
   location-api-1:
     restart: always
     depends_on:
@@ -319,9 +294,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 150M
+          cpus: '0.50'
+          memory: 50M
         reservations:
-          memory: 75M
+          memory: 20M
   location-api-2:
     restart: always
     depends_on:
@@ -349,9 +325,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 150M
+          cpus: '0.50'
+          memory: 50M
         reservations:
-          memory: 75M
+          memory: 20M
   media-api-1:
     restart: always
     depends_on:
@@ -379,9 +356,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 150M
+          cpus: '0.50'
+          memory: 50M
         reservations:
-          memory: 75M
+          memory: 20M
   media-api-2:
     restart: always
     depends_on:
@@ -409,9 +387,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 150M
+          cpus: '0.50'
+          memory: 50M
         reservations:
-          memory: 75M
+          memory: 20M
   notification-api-1:
     restart: always
     depends_on:
@@ -439,9 +418,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 150M
+          cpus: '0.50'
+          memory: 50M
         reservations:
-          memory: 75M
+          memory: 20M
   notification-api-2:
     restart: always
     depends_on:
@@ -469,9 +449,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 150M
+          cpus: '0.50'
+          memory: 50M
         reservations:
-          memory: 75M
+          memory: 20M
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
     container_name: es01
@@ -487,7 +468,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - data01:/usr/share/elasticsearch/data
+      - data01:/data/elasticsearch
     ports:
       - 9200:9200
     networks:
@@ -507,7 +488,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - data02:/usr/share/elasticsearch/data
+      - data02:/data/elasticsearch
     ports:
       - 9201:9201
     networks:
@@ -527,7 +508,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - data03:/usr/share/elasticsearch/data
+      - data03:/data/elasticsearch
     ports:
       - 9202:9202
     networks:
@@ -546,6 +527,34 @@ services:
       ELASTICSEARCH_HOSTS: http://es01:9200
     networks:
       - hermes-network
+  postgres:
+    restart: always
+    image: postgres
+    container_name: postgres_1
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-someadvancedpassword}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    networks:
+      - hermes-network
+    ports:
+      - 5432:5432
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/root/.pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - hermes-network
+    restart: unless-stopped
 networks:
   hermes-network:
     name: hermes-network
@@ -554,6 +563,8 @@ networks:
       config:
         - subnet: 172.16.101.0/24
 volumes:
+  postgres:
+  pgadmin:
   couchbase1-data:
   couchbase2-data:
   couchbase3-data:
