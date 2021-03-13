@@ -19,6 +19,23 @@
         <PackageReference Include="Consul" Version="1.6.1.1"/>
         <PackageReference Include="Couchbase.Extensions.DependencyInjection" Version="2.0.2"/>
         <PackageReference Include="CouchbaseNetClient" Version="2.7.16"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.10"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="3.1.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.10">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.10"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.10"/>
+        <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.2.22"/>
+        <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.2.22"/>
     </ItemGroup>
 
 </Project>

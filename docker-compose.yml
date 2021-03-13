@@ -116,12 +116,7 @@ services:
     restart: always
     depends_on:
       - consul
-      - couchbase1
-      - couchbase2
-      - couchbase3
-      - es01
-      - es02
-      - es03
+      - sqlserver
     image: user-api
     build:
       context: .
@@ -555,6 +550,19 @@ services:
     networks:
       - hermes-network
     restart: unless-stopped
+  sqlserver:
+    restart: always
+    image: "mcr.microsoft.com/mssql/server"
+    ports:
+      - 1433:1433
+    networks:
+      - hermes-network
+    container_name: sqlserver
+    volumes:
+      - sqlserver:/data/sqserver
+    environment:
+      SA_PASSWORD: "Some@Advanced!Password"
+      ACCEPT_EULA: "Y"
 networks:
   hermes-network:
     name: hermes-network
@@ -564,6 +572,7 @@ networks:
         - subnet: 172.16.101.0/24
 volumes:
   postgres:
+  sqlserver:
   pgadmin:
   couchbase1-data:
   couchbase2-data:

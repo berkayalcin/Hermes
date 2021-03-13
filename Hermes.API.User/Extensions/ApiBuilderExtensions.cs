@@ -36,7 +36,7 @@ namespace Hermes.API.User.Extensions
             if (addresses == null) return app;
             var address = addresses.Addresses.First();
             var uri = new Uri(address);
-            var registration = new AgentServiceRegistration()
+            var registration = new AgentServiceRegistration
             {
                 ID = $"{applicationName}-{uri.Port}",
                 Name = applicationName,
