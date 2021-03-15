@@ -22,6 +22,12 @@ namespace Hermes.API.User.Domain.Authentication
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
+            if (!context.HttpContext.Request.Headers.ContainsKey("Authorization"))
+            {
+                SetContextResultAsUnauthorized(context);
+                return;
+            }
+
             var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ")
                 .LastOrDefault();
 
