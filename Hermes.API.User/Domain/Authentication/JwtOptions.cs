@@ -1,4 +1,4 @@
-namespace Hermes.API.User.Domain.Utils
+namespace Hermes.API.User.Domain.Authentication
 {
     public class JwtOptions
     {

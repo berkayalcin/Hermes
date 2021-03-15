@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hermes.API.User.Domain.Authentication;
 using Hermes.API.User.Domain.Data;
 using Hermes.API.User.Domain.Entities;
 using Hermes.API.User.Domain.Filters;

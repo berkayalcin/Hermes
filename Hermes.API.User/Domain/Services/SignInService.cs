@@ -5,10 +5,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Hermes.API.User.Domain.Authentication;
 using Hermes.API.User.Domain.Entities;
 using Hermes.API.User.Domain.Requests;
 using Hermes.API.User.Domain.Responses;
-using Hermes.API.User.Domain.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
