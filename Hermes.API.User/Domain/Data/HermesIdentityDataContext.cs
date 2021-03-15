@@ -45,7 +45,7 @@ namespace Hermes.API.User.Domain.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = _configuration.GetValue<string>("NovabathConnectionString");
+            var connectionString = _configuration.GetValue<string>("HermesIdentityConnectionString");
             if (!optionsBuilder.IsConfigured) optionsBuilder.UseSqlServer(connectionString);
         }
     }

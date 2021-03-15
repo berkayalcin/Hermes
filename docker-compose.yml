@@ -114,9 +114,15 @@ services:
       - consul
   user-api-1:
     restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5011/healthcheck" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     depends_on:
       - consul
-      - sqlserver
+      - hermes_sqlserver
     image: user-api
     build:
       context: .
@@ -124,22 +130,27 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - SERVICE_URL=http://user-api-1:5011
-    networks:
-      hermes-network:
-        ipv4_address: 172.16.101.20
     ports:
       - "5011:5011"
     expose:
       - "5011"
+    networks:
+      hermes-network:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 50M
+          cpus: '0.75'
+          memory: 150M
         reservations:
           memory: 20M
   advertisement-api-1:
     restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5021/healthcheck" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     depends_on:
       - consul
       - couchbase1
@@ -171,6 +182,12 @@ services:
           memory: 20M
   advertisement-api-2:
     restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5022/healthcheck" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     depends_on:
       - consul
       - couchbase1
@@ -202,6 +219,12 @@ services:
           memory: 20M
   catalog-api-1:
     restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5031/healthcheck" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     depends_on:
       - consul
       - couchbase1
@@ -232,6 +255,12 @@ services:
         reservations:
           memory: 20M
   catalog-api-2:
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5032/healthcheck" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     restart: always
     depends_on:
       - consul
@@ -264,6 +293,12 @@ services:
           memory: 20M
   location-api-1:
     restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5041/healthcheck" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     depends_on:
       - consul
       - couchbase1
@@ -294,6 +329,12 @@ services:
         reservations:
           memory: 20M
   location-api-2:
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5042/healthcheck" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     restart: always
     depends_on:
       - consul
@@ -326,6 +367,12 @@ services:
           memory: 20M
   media-api-1:
     restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5051/healthcheck" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     depends_on:
       - consul
       - couchbase1
@@ -357,6 +404,12 @@ services:
           memory: 20M
   media-api-2:
     restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5052/healthcheck" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     depends_on:
       - consul
       - couchbase1
@@ -388,6 +441,12 @@ services:
           memory: 20M
   notification-api-1:
     restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:4991/healthcheck" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     depends_on:
       - consul
       - couchbase1
@@ -419,6 +478,12 @@ services:
           memory: 20M
   notification-api-2:
     restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:4992/healthcheck" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     depends_on:
       - consul
       - couchbase1
@@ -550,14 +615,16 @@ services:
     networks:
       - hermes-network
     restart: unless-stopped
-  sqlserver:
+
+  hermes_sqlserver:
     restart: always
+    container_name: hermes_sqlserver
     image: "mcr.microsoft.com/mssql/server"
     ports:
       - 1433:1433
     networks:
-      - hermes-network
-    container_name: sqlserver
+      hermes-network:
+        ipv4_address: 172.16.101.80
     volumes:
       - sqlserver:/data/sqserver
     environment:

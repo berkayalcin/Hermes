@@ -38,23 +38,6 @@ namespace Hermes.API.User.Domain.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<ServiceResponseModel> DeleteAsync(long id)
-        {
-            if (id == 0) throw new ServiceArgumentNullException(nameof(id), ExceptionCodes.RequestedModelIsNull);
-
-            var user = await _userManager.FindByIdAsync(id.ToString());
-            if (user == null) return new ServiceResponseModel("User Is Not Found", false);
-            if (user.IsDeleted) return new ServiceResponseModel("User Is Not Found", false);
-
-            user.IsDeleted = true;
-            var result = await _userManager.UpdateAsync(user);
-
-            if (result.Succeeded) return new ServiceResponseModel("User deleted successfully", true);
-
-            var errors = string.Join("\n", result.Errors.Select(x => x.Description).ToList());
-            return new ServiceResponseModel(errors, false);
-        }
-
 
         public async Task<UserDto> GetAsync(string email)
         {
@@ -68,63 +51,11 @@ namespace Hermes.API.User.Domain.Services
             return userDto;
         }
 
-        public async Task<UserDto> GetByIdAsync(long id)
+        public async Task<UserDto> GetAsync(long id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null) return null;
             return user.IsDeleted ? null : _mapper.Map<UserDto>(user);
-        }
-
-        public async Task<UserDto> RegisterAsync(UserRegisterRequest userRegisterRequest)
-        {
-            if (userRegisterRequest == null)
-                throw new ServiceArgumentNullException(nameof(userRegisterRequest),
-                    ExceptionCodes.RequestedModelIsNull);
-
-            var isUserExists =
-                await _userManager.Users.AnyAsync(u => u.PhoneNumber.Equals(userRegisterRequest.PhoneNumber));
-            if (isUserExists) throw new InvalidOperationException("User Already Exists");
-
-            var user = _mapper.Map<HermesUser>(userRegisterRequest);
-            user.IsDeleted = false;
-            user.PasswordHash = _passwordHasher.HashPassword(user, userRegisterRequest.Password);
-            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-            var createUserResult = await _userManager.CreateAsync(user);
-            if (!createUserResult.Succeeded)
-            {
-                var errors = string.Join("\n", createUserResult.Errors.Select(x => x.Description).ToList());
-                throw new InvalidOperationException(errors);
-            }
-
-            await _roleService.AddUserToRoleAsync(new AddUserToRoleRequest
-            {
-                Email = user.Email,
-                Role = UserRoles.Client
-            });
-
-            var userDto = _mapper.Map<UserDto>(user);
-            userDto.Password = null;
-            scope.Complete();
-            return userDto;
-        }
-
-        public async Task<ServiceResponseModel> UpdateAsync(UserUpdateRequest request)
-        {
-            var user = await _userManager.FindByEmailAsync(request.Email);
-            if (user == null) return new ServiceResponseModel($"Cannot find user with {request.Email} email", false);
-
-            var isUserSameOrAdmin = await UserIsSameOrAdmin(user);
-            if (!isUserSameOrAdmin) return new ServiceResponseModel("Unauthorized access exception", false);
-
-            user.Firstname = request.Firstname;
-            user.Lastname = request.Lastname;
-            user.PhoneNumber = request.PhoneNumber;
-            var updateResult = await _userManager.UpdateAsync(user);
-
-            if (updateResult.Succeeded) return new ServiceResponseModel("User updated successfully", true);
-
-            var errors = string.Join("\n", updateResult.Errors.Select(x => x.Description).ToList());
-            throw new InvalidOperationException(errors);
         }
 
         public async Task<PagedResponse<SearchUsersResponse>> GetAll(SearchUsersRequest request)
@@ -175,20 +106,91 @@ namespace Hermes.API.User.Domain.Services
             };
         }
 
-        private async Task<bool> UserIsSameOrAdmin(HermesUser hermesUser)
+        public async Task<UserDto> RegisterAsync(UserRegisterRequest userRegisterRequest)
         {
-            if (_httpContextAccessor.HttpContext != null)
+            if (userRegisterRequest == null)
+                throw new ServiceArgumentNullException(nameof(userRegisterRequest),
+                    ExceptionCodes.RequestedModelIsNull);
+
+            var isUserExists =
+                await _userManager.Users.AnyAsync(u => u.PhoneNumber.Equals(userRegisterRequest.PhoneNumber));
+            if (isUserExists)
             {
-                var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var currentUser = await _userManager.FindByIdAsync(userId);
-
-                if (currentUser.Id == hermesUser.Id) return true;
-
-                var currentUserRoles = await _userManager.GetRolesAsync(currentUser);
-                return currentUserRoles?.Any(x => x.Equals(UserRoles.Administrator)) ?? false;
+                throw new InvalidOperationException("User Already Exists");
             }
 
-            return false;
+            var user = _mapper.Map<HermesUser>(userRegisterRequest);
+            user.IsDeleted = false;
+            user.PasswordHash = _passwordHasher.HashPassword(user, userRegisterRequest.Password);
+
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            var createUserResult = await _userManager.CreateAsync(user);
+            if (!createUserResult.Succeeded)
+            {
+                var errors = string.Join("\n", createUserResult.Errors.Select(x => x.Description).ToList());
+                throw new InvalidOperationException(errors);
+            }
+
+            await _roleService.AddUserToRoleAsync(new AddUserToRoleRequest
+            {
+                Email = user.Email,
+                Role = UserRoles.Client
+            });
+
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.Password = null;
+            scope.Complete();
+            return userDto;
+        }
+
+        public async Task<ServiceResponseModel> UpdateAsync(UserUpdateRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null) return new ServiceResponseModel($"Cannot find user with {request.Email} email", false);
+
+            var isUserSameOrAdmin = await UserIsSameOrAdmin(user);
+            if (!isUserSameOrAdmin) return new ServiceResponseModel("Unauthorized access exception", false);
+
+            user.Firstname = request.Firstname;
+            user.Lastname = request.Lastname;
+            user.PhoneNumber = request.PhoneNumber;
+            var updateResult = await _userManager.UpdateAsync(user);
+
+            if (updateResult.Succeeded) return new ServiceResponseModel("User updated successfully", true);
+
+            var errors = string.Join("\n", updateResult.Errors.Select(x => x.Description).ToList());
+            throw new InvalidOperationException(errors);
+        }
+
+        public async Task<ServiceResponseModel> DeleteAsync(long id)
+        {
+            if (id == 0) throw new ServiceArgumentNullException(nameof(id), ExceptionCodes.RequestedModelIsNull);
+
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null) return new ServiceResponseModel("User Is Not Found", false);
+            if (user.IsDeleted) return new ServiceResponseModel("User Is Not Found", false);
+
+            user.IsDeleted = true;
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded) return new ServiceResponseModel("User deleted successfully", true);
+
+            var errors = string.Join("\n", result.Errors.Select(x => x.Description).ToList());
+            return new ServiceResponseModel(errors, false);
+        }
+
+
+        private async Task<bool> UserIsSameOrAdmin(HermesUser hermesUser)
+        {
+            if (_httpContextAccessor.HttpContext == null) return false;
+
+            var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUser = await _userManager.FindByIdAsync(userId);
+
+            if (currentUser.Id == hermesUser.Id) return true;
+
+            var currentUserRoles = await _userManager.GetRolesAsync(currentUser);
+            return currentUserRoles?.Any(x => x.Equals(UserRoles.Administrator)) ?? false;
         }
 
         private IQueryable<HermesUser> ApplyOrder(IQueryable<HermesUser> products,

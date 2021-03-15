@@ -11,6 +11,6 @@ namespace Hermes.API.User.Domain.Services
         Task<ServiceResponseModel> DeleteAsync(long id);
         Task<ServiceResponseModel> UpdateAsync(UserUpdateRequest request);
         Task<PagedResponse<SearchUsersResponse>> GetAll(SearchUsersRequest request);
-        Task<UserDto> GetByIdAsync(long id);
+        Task<UserDto> GetAsync(long id);
     }
 }

@@ -5,7 +5,10 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Hermes.API.User.Domain.Data;
 using Hermes.API.User.Domain.Entities;
+using Hermes.API.User.Domain.Filters;
+using Hermes.API.User.Domain.Mappers;
 using Hermes.API.User.Domain.Responses;
+using Hermes.API.User.Domain.Services;
 using Hermes.API.User.Domain.Utils;
 using Hermes.API.User.Domain.Validators;
 using Hermes.API.User.Extensions;
@@ -21,7 +24,6 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -39,10 +41,16 @@ namespace Hermes.API.User
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(options => { options.AllowEmptyInputInBodyModelBinding = true; })
+            services.AddControllers(options =>
+                {
+                    options.AllowEmptyInputInBodyModelBinding = true;
+                    options.Filters.Add(typeof(HttpGlobalExceptionFilter));
+                })
                 .AddFluentValidation(o =>
                     {
-                        // TODO Add Validators.
+                        o.RegisterValidatorsFromAssemblyContaining<ChangePasswordValidator>();
+                        o.RegisterValidatorsFromAssemblyContaining<UserRegisterRequestValidator>();
+                        o.RegisterValidatorsFromAssemblyContaining<UserUpdateRequestValidator>();
                     }
                 )
                 .AddJsonOptions(opt => { opt.JsonSerializerOptions.IgnoreNullValues = true; }
@@ -62,25 +70,38 @@ namespace Hermes.API.User
                     };
                 });
 
-            services.AddMiniProfiler(options => { options.RouteBasePath = "/profiles"; })
-                .AddEntityFramework();
-
+            // Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Hermes User API", Version = "v1"});
             });
 
-            services.AddConsulConfig(Configuration);
-            services.AddHealthChecks();
+            // Services
 
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISignInService, SignInService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            // Mappers
+
+            services.AddAutoMapper(typeof(MappingProfile));
+
+
+            // Authentication
             RegisterIdentity(services);
             RegisterAuth(services);
 
+            // Server Configuration
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders =
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
+            services.AddConsulConfig(Configuration);
+            services.AddHealthChecks();
+            services.AddMiniProfiler(options => { options.RouteBasePath = "/profiles"; })
+                .AddEntityFramework();
         }
 
         private void RegisterAuth(IServiceCollection services)
@@ -158,13 +179,6 @@ namespace Hermes.API.User
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hermes User API v1"));
-            }
-
             app.UseMiniProfiler();
 
             app.UseSwagger();

@@ -32,8 +32,10 @@ namespace Hermes.API.User.Domain.Services
 
             var role = await _roleManager.FindByNameAsync(addUserToRoleRequest.Role);
             if (role == null)
+            {
                 throw new InvalidOperationException(string.Format(ExceptionConstants.RoleIsNotFound,
                     addUserToRoleRequest.Role));
+            }
 
             var user = await _userManager.FindByEmailAsync(addUserToRoleRequest.Email);
 
