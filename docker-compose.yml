@@ -140,7 +140,7 @@ services:
       resources:
         limits:
           cpus: '0.75'
-          memory: 150M
+          memory: 200M
         reservations:
           memory: 20M
   advertisement-api-1:
@@ -168,7 +168,6 @@ services:
       - SERVICE_URL=http://advertisement-api-1:5021
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.30
     ports:
       - "5021:5021"
     expose:
@@ -176,8 +175,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 50M
+          cpus: '0.75'
+          memory: 200M
         reservations:
           memory: 20M
   advertisement-api-2:
@@ -205,7 +204,6 @@ services:
       - SERVICE_URL=http://advertisement-api-1:5022
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.31
     ports:
       - "5022:5022"
     expose:
@@ -213,8 +211,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 50M
+          cpus: '0.75'
+          memory: 200M
         reservations:
           memory: 20M
   catalog-api-1:
@@ -242,7 +240,6 @@ services:
       - SERVICE_URL=http://catalog-api-1:5031
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.41
     ports:
       - "5031:5031"
     expose:
@@ -250,8 +247,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 50M
+          cpus: '0.75'
+          memory: 200M
         reservations:
           memory: 20M
   catalog-api-2:
@@ -279,7 +276,6 @@ services:
       - SERVICE_URL=http://catalog-api-2:5032
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.42
     ports:
       - "5032:5032"
     expose:
@@ -287,8 +283,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 50M
+          cpus: '0.75'
+          memory: 200M
         reservations:
           memory: 20M
   location-api-1:
@@ -316,7 +312,6 @@ services:
       - SERVICE_URL=http://location-api-1:5041
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.51
     ports:
       - "5041:5041"
     expose:
@@ -324,8 +319,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 50M
+          cpus: '0.75'
+          memory: 200M
         reservations:
           memory: 20M
   location-api-2:
@@ -353,7 +348,6 @@ services:
       - SERVICE_URL=http://location-api-2:5042
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.52
     ports:
       - "5042:5042"
     expose:
@@ -361,8 +355,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 50M
+          cpus: '0.75'
+          memory: 200M
         reservations:
           memory: 20M
   media-api-1:
@@ -390,7 +384,6 @@ services:
       - SERVICE_URL=http://media-api-1:5051
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.61
     ports:
       - "5051:5051"
     expose:
@@ -398,8 +391,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 50M
+          cpus: '0.75'
+          memory: 200M
         reservations:
           memory: 20M
   media-api-2:
@@ -427,7 +420,6 @@ services:
       - SERVICE_URL=http://media-api-2:5052
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.62
     ports:
       - "5052:5052"
     expose:
@@ -435,8 +427,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 50M
+          cpus: '0.75'
+          memory: 200M
         reservations:
           memory: 20M
   notification-api-1:
@@ -464,7 +456,6 @@ services:
       - SERVICE_URL=http://notification-api-1:4991
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.71
     ports:
       - "4991:4991"
     expose:
@@ -472,8 +463,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 50M
+          cpus: '0.75'
+          memory: 200M
         reservations:
           memory: 20M
   notification-api-2:
@@ -501,7 +492,6 @@ services:
       - SERVICE_URL=http://notification-api-2:4992
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.72
     ports:
       - "4992:4992"
     expose:
@@ -509,8 +499,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 50M
+          cpus: '0.75'
+          memory: 150M
         reservations:
           memory: 20M
   es01:
