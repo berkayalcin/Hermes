@@ -113,6 +113,7 @@ services:
     links:
       - consul
   user-api-1:
+    container_name: user-api-node-1
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:5011/healthcheck" ]
@@ -144,6 +145,7 @@ services:
         reservations:
           memory: 20M
   advertisement-api-1:
+    container_name: advertisement-api-node-1
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:5021/healthcheck" ]
@@ -180,6 +182,7 @@ services:
         reservations:
           memory: 20M
   advertisement-api-2:
+    container_name: advertisement-api-node-2
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:5022/healthcheck" ]
@@ -201,7 +204,7 @@ services:
       dockerfile: Dockerfile-Advertisement-API
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - SERVICE_URL=http://advertisement-api-1:5022
+      - SERVICE_URL=http://advertisement-api-2:5022
     networks:
       hermes-network:
     ports:
@@ -216,6 +219,7 @@ services:
         reservations:
           memory: 20M
   catalog-api-1:
+    container_name: catalog-api-node-1
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:5031/healthcheck" ]
@@ -252,6 +256,7 @@ services:
         reservations:
           memory: 20M
   catalog-api-2:
+    container_name: catalog-api-node-2
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:5032/healthcheck" ]
       interval: 1m30s
@@ -288,6 +293,7 @@ services:
         reservations:
           memory: 20M
   location-api-1:
+    container_name: location-api-node-1
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:5041/healthcheck" ]
@@ -324,6 +330,7 @@ services:
         reservations:
           memory: 20M
   location-api-2:
+    container_name: location-api-node-2
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:5042/healthcheck" ]
       interval: 1m30s
@@ -360,6 +367,7 @@ services:
         reservations:
           memory: 20M
   media-api-1:
+    container_name: media-api-node-1
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:5051/healthcheck" ]
@@ -396,6 +404,7 @@ services:
         reservations:
           memory: 20M
   media-api-2:
+    container_name: media-api-node-2
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:5052/healthcheck" ]
@@ -432,6 +441,7 @@ services:
         reservations:
           memory: 20M
   notification-api-1:
+    container_name: notification-api-node-1
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:4991/healthcheck" ]
@@ -468,6 +478,7 @@ services:
         reservations:
           memory: 20M
   notification-api-2:
+    container_name: notification-api-node-2
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:4992/healthcheck" ]

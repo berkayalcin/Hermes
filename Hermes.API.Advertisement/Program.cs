@@ -1,11 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Hermes.API.Advertisement.Domain.Constants;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Elasticsearch;
+using Serilog.Sinks.Elasticsearch;
 
 namespace Hermes.API.Advertisement
 {
@@ -20,6 +22,33 @@ namespace Hermes.API.Advertisement
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureLogging(l =>
+                    {
+                        l.ClearProviders();
+                        l.AddConsole();
+                        l.SetMinimumLevel(LogLevel.Information);
+                    });
+
+                    webBuilder.UseSerilog((context, configuration) =>
+                    {
+                        var hostUrls = context.Configuration[ConfigConstants.ElasticSearchUrl].Split(",");
+                        var elasticSearchUrls = hostUrls
+                            .Select(u => new Uri(u));
+                        configuration.Enrich.FromLogContext()
+                            .WriteTo.Console(new ElasticsearchJsonFormatter())
+                            .MinimumLevel.Override(ConfigConstants.MicrosoftLogsSourceName, LogEventLevel.Warning)
+                            .WriteTo.Elasticsearch(
+                                new ElasticsearchSinkOptions(
+                                    elasticSearchUrls)
+                                {
+                                    IndexFormat = ConfigConstants.ElasticSearchLogsIndexFormat,
+                                    NumberOfReplicas = 2,
+                                    NumberOfShards = 2
+                                })
+                            .Enrich.WithProperty(ConfigConstants.SerilogApplicationPropertyName,
+                                ConfigConstants.ApplicationName)
+                            .ReadFrom.Configuration(context.Configuration);
+                    });
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseUrls(Environment.GetEnvironmentVariable("SERVICE_URL")!);
                 });

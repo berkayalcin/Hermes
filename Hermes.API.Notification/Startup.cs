@@ -112,8 +112,6 @@ namespace Hermes.API.Notification
 
             app.UseConsul();
 
-            app.UseHttpsRedirection();
-
             app.UseAuthentication();
 
             app.UseRouting();
