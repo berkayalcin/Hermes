@@ -16,10 +16,10 @@ jobs:
       - name: Push to Docker Hub
         uses: docker/build-push-action@v1
         with:
-          file: 'Dockerfile-Advertisement-API'
+          path: 'Dockerfile-Advertisement-API'
           context: .
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: yalcinberkay/hermes
           tag_with_ref: true
-          push: true
+          tag_with_sha: true
