@@ -21,4 +21,4 @@ jobs:
           repository: yalcinberkay/hermes
           tag_with_ref: true
           tag_with_sha: true
-          file: Dockerfile-Advertisement-API
+          dockerfile: Dockerfile-Advertisement-API
