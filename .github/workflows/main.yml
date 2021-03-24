@@ -23,4 +23,3 @@ jobs:
           repository: yalcinberkay/hermes
           tag_with_ref: true
           push: true
-          tags: hermes/advertisement-api:latest
