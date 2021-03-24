@@ -75,7 +75,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: yalcinberkay/hermes-api-gateway
           tag_with_ref: true
-          dockerfile: Dockerfile-Gateway-API
+          dockerfile: Dockerfile-Gateway
           
           
           
