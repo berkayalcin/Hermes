@@ -1,0 +1,87 @@
+name: Publish Docker image
+on:
+  release:
+    types: [published]
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]    
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+        
+      - name: Push Advertisement API to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: yalcinberkay/hermes-advertisement-api
+          tag_with_ref: true
+          dockerfile: Dockerfile-Advertisement-API
+          
+      - name: Push Catalog API to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: yalcinberkay/hermes-catalog-api
+          tag_with_ref: true
+          dockerfile: Dockerfile-Catalog-API
+          
+      - name: Push Location API to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: yalcinberkay/hermes-location-api
+          tag_with_ref: true
+          dockerfile: Dockerfile-Location-API
+          
+      - name: Push Media API to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: yalcinberkay/hermes-media-api
+          tag_with_ref: true
+          dockerfile: Dockerfile-Media-API
+
+      - name: Push Notification API to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: yalcinberkay/hermes-notification-api
+          tag_with_ref: true
+          dockerfile: Dockerfile-Notification-API
+          
+      - name: Push User API to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: yalcinberkay/hermes-user-api
+          tag_with_ref: true
+          dockerfile: Dockerfile-User-API
+          
+      - name: Push Gateway to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: yalcinberkay/hermes-api-gateway
+          tag_with_ref: true
+          dockerfile: Dockerfile-Gateway
+          
+          
+          
+          
+          
+          
+          
+          
+          
