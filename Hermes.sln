@@ -13,6 +13,7 @@ ProjectSection(SolutionItems) = preProject
 	Dockerfile-Media-API = Dockerfile-Media-API
 	.gitignore = .gitignore
 	Dockerfile-Notification-API = Dockerfile-Notification-API
+	start-container.sh = start-container.sh
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.User", "Hermes.API.User\Hermes.API.User.csproj", "{30802F99-CCB8-4B53-8A42-9E88F0DA3D6E}"
