@@ -97,7 +97,7 @@ services:
     restart: always
     depends_on:
       - consul
-    image: api-gateway
+    image: yalcinberkay/hermes-api-gateway
     build:
       context: .
       dockerfile: Dockerfile-Gateway
@@ -124,7 +124,7 @@ services:
     depends_on:
       - consul
       - hermes_sqlserver
-    image: user-api
+    image: yalcinberkay/hermes-user-api
     build:
       context: .
       dockerfile: Dockerfile-User-API
@@ -161,7 +161,7 @@ services:
       - es01
       - es02
       - es03
-    image: advertisement-api
+    image: yalcinberkay/hermes-advertisement-api
     build:
       context: .
       dockerfile: Dockerfile-Advertisement-API
@@ -198,7 +198,7 @@ services:
       - es01
       - es02
       - es03
-    image: advertisement-api
+    image: yalcinberkay/hermes-advertisement-api
     build:
       context: .
       dockerfile: Dockerfile-Advertisement-API
@@ -235,7 +235,7 @@ services:
       - es01
       - es02
       - es03
-    image: catalog-api
+    image: yalcinberkay/hermes-catalog-api
     build:
       context: .
       dockerfile: Dockerfile-Catalog-API
@@ -272,7 +272,7 @@ services:
       - es01
       - es02
       - es03
-    image: catalog-api
+    image: yalcinberkay/hermes-catalog-api
     build:
       context: .
       dockerfile: Dockerfile-Catalog-API
@@ -309,7 +309,7 @@ services:
       - es01
       - es02
       - es03
-    image: location-api
+    image: yalcinberkay/hermes-location-api
     build:
       context: .
       dockerfile: Dockerfile-Location-API
@@ -346,7 +346,7 @@ services:
       - es01
       - es02
       - es03
-    image: location-api
+    image: yalcinberkay/hermes-location-api
     build:
       context: .
       dockerfile: Dockerfile-Location-API
@@ -383,7 +383,7 @@ services:
       - es01
       - es02
       - es03
-    image: media-api
+    image: yalcinberkay/hermes-media-api
     build:
       context: .
       dockerfile: Dockerfile-Media-API
@@ -420,7 +420,7 @@ services:
       - es01
       - es02
       - es03
-    image: media-api
+    image: yalcinberkay/hermes-media-api
     build:
       context: .
       dockerfile: Dockerfile-Media-API
@@ -457,7 +457,7 @@ services:
       - es01
       - es02
       - es03
-    image: notification-api
+    image: yalcinberkay/hermes-notification-api
     build:
       context: .
       dockerfile: Dockerfile-Notification-API
@@ -494,7 +494,7 @@ services:
       - es01
       - es02
       - es03
-    image: notification-api
+    image: yalcinberkay/hermes-notification-api
     build:
       context: .
       dockerfile: Dockerfile-Notification-API
