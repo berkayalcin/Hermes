@@ -49,38 +49,6 @@ services:
       - 18093:8093
       - 18094:8094
       - 21210:11210
-  couchbase3:
-    tty: true
-    stdin_open: true
-    restart: always
-    container_name: couchbase3
-    image: couchbase/server
-    volumes:
-      - couchbase3-data:/data/couchbase3
-    networks:
-      hermes-network:
-        ipv4_address: 172.16.101.13
-    links:
-      - couchbase2
-    depends_on:
-      - couchbase2
-    ports:
-      - 28091:8091
-      - 28092:8092
-      - 28093:8093
-      - 28094:8094
-      - 31210:11210
-    ulimits:
-      nproc: 65535
-      core:
-        soft: 100000000
-        hard: 100000000
-      memlock:
-        soft: 100000000
-        hard: 100000000
-      nofile:
-        soft: 40960
-        hard: 40960
   consul:
     image: consul
     restart: always
@@ -157,10 +125,7 @@ services:
       - consul
       - couchbase1
       - couchbase2
-      - couchbase3
       - es01
-      - es02
-      - es03
     image: yalcinberkay/hermes-advertisement-api
     build:
       context: .
@@ -194,10 +159,7 @@ services:
       - consul
       - couchbase1
       - couchbase2
-      - couchbase3
       - es01
-      - es02
-      - es03
     image: yalcinberkay/hermes-advertisement-api
     build:
       context: .
@@ -231,10 +193,7 @@ services:
       - consul
       - couchbase1
       - couchbase2
-      - couchbase3
       - es01
-      - es02
-      - es03
     image: yalcinberkay/hermes-catalog-api
     build:
       context: .
@@ -268,10 +227,7 @@ services:
       - consul
       - couchbase1
       - couchbase2
-      - couchbase3
       - es01
-      - es02
-      - es03
     image: yalcinberkay/hermes-catalog-api
     build:
       context: .
@@ -305,10 +261,7 @@ services:
       - consul
       - couchbase1
       - couchbase2
-      - couchbase3
       - es01
-      - es02
-      - es03
     image: yalcinberkay/hermes-location-api
     build:
       context: .
@@ -342,10 +295,7 @@ services:
       - consul
       - couchbase1
       - couchbase2
-      - couchbase3
       - es01
-      - es02
-      - es03
     image: yalcinberkay/hermes-location-api
     build:
       context: .
@@ -379,10 +329,7 @@ services:
       - consul
       - couchbase1
       - couchbase2
-      - couchbase3
       - es01
-      - es02
-      - es03
     image: yalcinberkay/hermes-media-api
     build:
       context: .
@@ -416,10 +363,7 @@ services:
       - consul
       - couchbase1
       - couchbase2
-      - couchbase3
       - es01
-      - es02
-      - es03
     image: yalcinberkay/hermes-media-api
     build:
       context: .
@@ -453,10 +397,7 @@ services:
       - consul
       - couchbase1
       - couchbase2
-      - couchbase3
       - es01
-      - es02
-      - es03
     image: yalcinberkay/hermes-notification-api
     build:
       context: .
@@ -490,10 +431,7 @@ services:
       - consul
       - couchbase1
       - couchbase2
-      - couchbase3
       - es01
-      - es02
-      - es03
     image: yalcinberkay/hermes-notification-api
     build:
       context: .
@@ -520,8 +458,7 @@ services:
     environment:
       - node.name=es01
       - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es02,es03
-      - cluster.initial_master_nodes=es01,es02,es03
+      - cluster.initial_master_nodes=es01
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
@@ -534,51 +471,9 @@ services:
       - 9200:9200
     networks:
       - hermes-network
-  es02:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
-    container_name: es02
-    environment:
-      - node.name=es02
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es01,es03
-      - cluster.initial_master_nodes=es01,es02,es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data02:/data/elasticsearch
-    ports:
-      - 9201:9201
-    networks:
-      - hermes-network
-  es03:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
-    container_name: es03
-    environment:
-      - node.name=es03
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es01,es02
-      - cluster.initial_master_nodes=es01,es02,es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data03:/data/elasticsearch
-    ports:
-      - 9202:9202
-    networks:
-      - hermes-network
   kib01:
     depends_on:
       - es01
-      - es02
-      - es03
     image: docker.elastic.co/kibana/kibana:7.10.2
     container_name: kib01
     ports:
@@ -616,7 +511,6 @@ services:
     networks:
       - hermes-network
     restart: unless-stopped
-
   hermes_sqlserver:
     restart: always
     container_name: hermes_sqlserver
@@ -644,7 +538,6 @@ volumes:
   pgadmin:
   couchbase1-data:
   couchbase2-data:
-  couchbase3-data:
   data01:
     driver: local
   data02:
