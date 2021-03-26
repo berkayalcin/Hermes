@@ -1,12 +1,12 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/v1/home",
+      "DownstreamPathTemplate": "/{url}",
       "DownstreamScheme": "http",
       "LoadBalancerOptions": {
         "Type": "LeastConnection"
       },
-      "UpstreamPathTemplate": "/v1/user",
+      "UpstreamPathTemplate": "/user-gateway/{url}",
       "ServiceName": "Hermes-User-API",
       "UseServiceDiscovery": true
     },
