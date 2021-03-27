@@ -20,6 +20,7 @@ namespace Hermes.API.User.Controllers
 
 
         [HttpGet("{id}")]
+        [HermesAuthorize]
         public async Task<IActionResult> Get(long id)
         {
             var user = await _userService.GetAsync(id);
@@ -52,6 +53,7 @@ namespace Hermes.API.User.Controllers
         }
 
         [HttpPut("{id}")]
+        [HermesAuthorize]
         public async Task<IActionResult> Update(long id, [FromBody] UserUpdateRequest userUpdateRequest)
         {
             var userUpdateResult = await _userService.UpdateAsync(id, userUpdateRequest);
