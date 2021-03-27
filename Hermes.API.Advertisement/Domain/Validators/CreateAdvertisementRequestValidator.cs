@@ -7,10 +7,14 @@ namespace Hermes.API.Advertisement.Domain.Validators
     {
         public CreateAdvertisementRequestValidator()
         {
-            RuleFor(r => r.Title).NotEmpty().NotNull();
+            RuleFor(r => r.Title).NotNull().NotEmpty();
             RuleFor(r => r.Description).NotEmpty().NotNull().MinimumLength(50).MaximumLength(1000);
-            RuleFor(r => r.UserId).NotEmpty().NotNull();
-            RuleFor(r => r.CategoryId).NotEmpty().NotNull();
+            RuleFor(r => r.UserId).NotNull().NotEmpty();
+            RuleFor(r => r.CategoryId).NotNull().NotEmpty();
+            RuleFor(r => r.EstimatedBarrowDays).NotNull().NotEmpty();
+            RuleFor(r => r.Longitude).NotNull().NotEmpty();
+            RuleFor(r => r.Latitude).NotNull().NotEmpty();
+            RuleFor(r => r.Images).NotNull().NotEmpty();
         }
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using Hermes.Services.EmailSenderService.Domain.Constants;
+using Hermes.Services.EmailSenderService.Domain.Data;
+using Hermes.Services.EmailSenderService.Domain.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -15,7 +17,7 @@ namespace Hermes.Services.EmailSenderService
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().MigrateDatabase<HermesDbContext>().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)

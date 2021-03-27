@@ -11,12 +11,12 @@
       "UseServiceDiscovery": true
     },
     {
-      "DownstreamPathTemplate": "/v1/advertisement/{everything}",
+      "DownstreamPathTemplate": "/{url}",
       "DownstreamScheme": "http",
       "LoadBalancerOptions": {
         "Type": "LeastConnection"
       },
-      "UpstreamPathTemplate": "/v1/advertisement/{everything}",
+      "UpstreamPathTemplate": "/advertisement-gateway/{url}",
       "ServiceName": "Hermes-Advertisement-API",
       "UseServiceDiscovery": true
     },

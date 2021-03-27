@@ -6,8 +6,8 @@
                 <option name="commandLineOptions" value="--build"/>
                 <option name="services">
                     <list>
-                        <option value="user-api-1"/>
-                        <option value="emailsender-service"/>
+                        <option value="advertisement-api-1"/>
+                        <option value="advertisement-api-2"/>
                     </list>
                 </option>
                 <option name="sourceFilePath" value="docker-compose.yml"/>

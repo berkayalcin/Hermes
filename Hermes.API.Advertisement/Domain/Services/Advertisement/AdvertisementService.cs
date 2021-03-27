@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using Hermes.API.Advertisement.Domain.Enums;
 using Hermes.API.Advertisement.Domain.Models;
 using Hermes.API.Advertisement.Domain.Repositories.Advertisement;
 using Hermes.API.Advertisement.Domain.Requests;
@@ -21,12 +22,11 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
         public async Task<AdvertisementDto> Create(CreateAdvertisementRequest createAdvertisementRequest)
         {
             var advertisement = _mapper.Map<Entities.Advertisement>(createAdvertisementRequest);
-            advertisement.IsDeleted = false;
-            advertisement.CreatedAt = DateTime.UtcNow;
+            advertisement = SetInitialAdvertisementProperties(advertisement);
             advertisement = await _advertisementRepository.Create(advertisement);
 
-            // TODO Get Category From Category API
-            // TODO Get User From User API
+            // TODO : Get Category From Category API
+            // TODO : Get User From User API
             return _mapper.Map<AdvertisementDto>(advertisement);
         }
 
@@ -34,6 +34,14 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
         {
             var advertisement = await _advertisementRepository.Get(id);
             return advertisement == null ? null : _mapper.Map<AdvertisementDto>(advertisement);
+        }
+
+        private static Entities.Advertisement SetInitialAdvertisementProperties(Entities.Advertisement advertisement)
+        {
+            advertisement.IsDeleted = false;
+            advertisement.CreatedAt = DateTime.UtcNow;
+            advertisement.StatusId = (int) AdvertisementStatuses.Created;
+            return advertisement;
         }
     }
 }
