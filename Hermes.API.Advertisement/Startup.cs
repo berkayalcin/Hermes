@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Couchbase.Configuration.Client;
 using Couchbase.Extensions.DependencyInjection;
+using Elasticsearch.Net;
 using FluentValidation.AspNetCore;
 using Hermes.API.Advertisement.Domain.Authentication;
 using Hermes.API.Advertisement.Domain.Filters;
@@ -13,6 +14,7 @@ using Hermes.API.Advertisement.Domain.Repositories.Advertisement;
 using Hermes.API.Advertisement.Domain.Responses;
 using Hermes.API.Advertisement.Domain.Services.Advertisement;
 using Hermes.API.Advertisement.Domain.Services.AdvertisementBucketProvider;
+using Hermes.API.Advertisement.Domain.Services.ElasticSearch;
 using Hermes.API.Advertisement.Domain.Validators;
 using Hermes.API.Advertisement.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +24,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Nest;
 
 namespace Hermes.API.Advertisement
 {
@@ -85,6 +88,25 @@ namespace Hermes.API.Advertisement
 
             // Repositories
             services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
+
+            // Elastic Search
+            AddElastic(services, Configuration);
+        }
+
+        private static void AddElastic(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddScoped<IElasticSearchService, ElasticSearchService>();
+            services.AddScoped<IElasticClient>(provider =>
+            {
+                var elasticOptions = new ElasticSearchOptions();
+                configuration.Bind("ElasticSearchOptions", elasticOptions);
+                var uris = elasticOptions.HostUrls.Split(",").Select(u => new Uri(u)).ToArray();
+                var connectionPool = new SniffingConnectionPool(uris);
+                var settings = new ConnectionSettings(connectionPool);
+                settings.BasicAuthentication(elasticOptions.Username, elasticOptions.Password);
+                var client = new ElasticClient(settings);
+                return client;
+            });
         }
 
         private static void AddSwagger(IServiceCollection services)

@@ -23,6 +23,18 @@ namespace Hermes.API.Advertisement.Controllers
             return Created("/v1/Advertisement", advertisement);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] SearchAdvertisementRequest searchAdvertisementRequest)
+        {
+            var advertisements = await _advertisementService.GetAll(searchAdvertisementRequest);
+            if (advertisements.Items == null || advertisements.Items.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(advertisements);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {

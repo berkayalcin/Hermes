@@ -158,6 +158,7 @@ services:
       - consul
       - couchbase1
       - couchbase2
+      - couchbase3
       - es01
     image: yalcinberkay/hermes-advertisement-api
     build:
@@ -193,6 +194,7 @@ services:
       - consul
       - couchbase1
       - couchbase2
+      - couchbase3
       - es01
     image: yalcinberkay/hermes-advertisement-api
     build:
