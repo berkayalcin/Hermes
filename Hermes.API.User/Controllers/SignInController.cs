@@ -22,5 +22,12 @@ namespace Hermes.API.User.Controllers
             var response = await _signInService.SignInAsync(signInRequest);
             return Ok(response);
         }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest changePasswordRequest)
+        {
+            await _signInService.ChangePasswordAsync(changePasswordRequest);
+            return Ok();
+        }
     }
 }

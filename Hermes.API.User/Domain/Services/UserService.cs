@@ -143,9 +143,9 @@ namespace Hermes.API.User.Domain.Services
             return userDto;
         }
 
-        public async Task<ServiceResponseModel> UpdateAsync(UserUpdateRequest request)
+        public async Task<ServiceResponseModel> UpdateAsync(long id, UserUpdateRequest request)
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null) return new ServiceResponseModel($"Cannot find user with {request.Email} email", false);
 
             var isUserSameOrAdmin = await UserIsSameOrAdmin(user);

@@ -9,7 +9,7 @@ namespace Hermes.API.User.Domain.Services
         Task<UserDto> RegisterAsync(UserRegisterRequest userRegisterRequest);
         Task<UserDto> GetAsync(string email);
         Task<ServiceResponseModel> DeleteAsync(long id);
-        Task<ServiceResponseModel> UpdateAsync(UserUpdateRequest request);
+        Task<ServiceResponseModel> UpdateAsync(long id, UserUpdateRequest request);
         Task<PagedResponse<SearchUsersResponse>> GetAll(SearchUsersRequest request);
         Task<UserDto> GetAsync(long id);
     }
