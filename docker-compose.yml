@@ -384,72 +384,31 @@ services:
           memory: 200M
         reservations:
           memory: 20M
-  notification-api-1:
-    container_name: notification-api-node-1
+  emailsender-service:
     restart: always
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:4991/healthcheck" ]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
     depends_on:
       - consul
       - couchbase1
       - couchbase2
       - es01
-    image: yalcinberkay/hermes-notification-api
+    image: yalcinberkay/hermes-emailsender-service
     build:
       context: .
-      dockerfile: Dockerfile-Notification-API
+      dockerfile: Dockerfile-Email-Sender-Service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - SERVICE_URL=http://notification-api-1:4991
     networks:
       hermes-network:
-    ports:
-      - "4991:4991"
-    expose:
-      - "4991"
     deploy:
+      replicas: 6
+      placement:
+        max_replicas_per_node: 6
+      restart_policy:
+        condition: on-failure
       resources:
         limits:
           cpus: '0.75'
           memory: 200M
-        reservations:
-          memory: 20M
-  notification-api-2:
-    container_name: notification-api-node-2
-    restart: always
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:4992/healthcheck" ]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    depends_on:
-      - consul
-      - couchbase1
-      - couchbase2
-      - es01
-    image: yalcinberkay/hermes-notification-api
-    build:
-      context: .
-      dockerfile: Dockerfile-Notification-API
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - SERVICE_URL=http://notification-api-2:4992
-    networks:
-      hermes-network:
-    ports:
-      - "4992:4992"
-    expose:
-      - "4992"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.75'
-          memory: 150M
         reservations:
           memory: 20M
   es01:
@@ -458,7 +417,7 @@ services:
     environment:
       - node.name=es01
       - cluster.name=es-docker-cluster
-#      - cluster.initial_master_nodes=es01
+      #      - cluster.initial_master_nodes=es01
       - bootstrap.memory_lock=true
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"

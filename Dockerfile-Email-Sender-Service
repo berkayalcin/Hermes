@@ -3,15 +3,15 @@ EXPOSE 4991:4991
 WORKDIR /src
 
 # Copy csproj and restore as distinct layers
-COPY Hermes.API.Notification/Hermes.API.Notification.csproj ./
+COPY Hermes.Services.EmailSenderService/Hermes.Services.EmailSenderService.csproj ./
 RUN dotnet restore
 
 # Copy everything else and build
-COPY Hermes.API.Notification/ .
+COPY Hermes.Services.EmailSenderService/ .
 RUN dotnet publish -c Release -o /app/out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:5.0
 WORKDIR /app
 COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "Hermes.API.Notification.dll"]
+ENTRYPOINT ["dotnet", "Hermes.Services.EmailSenderService.dll"]

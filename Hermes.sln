@@ -12,7 +12,7 @@ ProjectSection(SolutionItems) = preProject
 	Dockerfile-Location-API = Dockerfile-Location-API
 	Dockerfile-Media-API = Dockerfile-Media-API
 	.gitignore = .gitignore
-	Dockerfile-Notification-API = Dockerfile-Notification-API
+	Dockerfile-Email-Sender-Service = Dockerfile-Email-Sender-Service
 	start-container.sh = start-container.sh
 EndProjectSection
 EndProject
@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.Media", "Hermes.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.Location", "Hermes.API.Location\Hermes.API.Location.csproj", "{3A416034-F838-4DFC-82A7-A4E39DC5580C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.API.Notification", "Hermes.API.Notification\Hermes.API.Notification.csproj", "{4B1A0753-A4B2-4207-AF4E-3F0F06DB2115}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.Services.EmailSenderService", "Hermes.Services.EmailSenderService\Hermes.Services.EmailSenderService.csproj", "{8114D249-E59C-4B17-82EC-02E12E0CA350}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,10 +58,10 @@ Global
 		{3A416034-F838-4DFC-82A7-A4E39DC5580C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A416034-F838-4DFC-82A7-A4E39DC5580C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A416034-F838-4DFC-82A7-A4E39DC5580C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4B1A0753-A4B2-4207-AF4E-3F0F06DB2115}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4B1A0753-A4B2-4207-AF4E-3F0F06DB2115}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4B1A0753-A4B2-4207-AF4E-3F0F06DB2115}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4B1A0753-A4B2-4207-AF4E-3F0F06DB2115}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8114D249-E59C-4B17-82EC-02E12E0CA350}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8114D249-E59C-4B17-82EC-02E12E0CA350}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8114D249-E59C-4B17-82EC-02E12E0CA350}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8114D249-E59C-4B17-82EC-02E12E0CA350}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
