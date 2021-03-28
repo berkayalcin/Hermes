@@ -3,10 +3,11 @@ using Hermes.API.Advertisement.Domain.Requests;
 
 namespace Hermes.API.Advertisement.Domain.Validators
 {
-    public class CreateAdvertisementRequestValidator : AbstractValidator<CreateAdvertisementRequest>
+    public class UpdateAdvertisementRequestValidator : AbstractValidator<UpdateAdvertisementRequest>
     {
-        public CreateAdvertisementRequestValidator()
+        public UpdateAdvertisementRequestValidator()
         {
+            RuleFor(r => r.Id).NotNull().NotEmpty();
             RuleFor(r => r.Title).NotNull().NotEmpty();
             RuleFor(r => r.Description).NotEmpty().NotNull().MinimumLength(50).MaximumLength(1000);
             RuleFor(r => r.UserId).NotNull().NotEmpty();
