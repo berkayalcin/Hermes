@@ -31,7 +31,14 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
         public async Task<AdvertisementDto> Create(CreateAdvertisementRequest createAdvertisementRequest)
         {
             var advertisement = _mapper.Map<Entities.Advertisement>(createAdvertisementRequest);
-            advertisement = SetInitialAdvertisementProperties(advertisement);
+            advertisement.IsDeleted = false;
+            advertisement.CreatedAt = DateTime.UtcNow;
+            advertisement.StatusId = (int) AdvertisementStatuses.Created;
+            advertisement.Location = new Geolocation
+            {
+                Lat = advertisement.Latitude,
+                Lon = advertisement.Longitude
+            };
             advertisement = await _advertisementRepository.Create(advertisement);
 
             await SeedAdvertisementToElasticSearch(advertisement);
@@ -39,6 +46,26 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
             // TODO : Get Category From Category API
             // TODO : Get User From User API
             return _mapper.Map<AdvertisementDto>(advertisement);
+        }
+
+        public async Task<AdvertisementDto> Update(UpdateAdvertisementRequest updateAdvertisementRequest)
+        {
+            var advertisement = await _advertisementRepository.Get(updateAdvertisementRequest.Id);
+            if (advertisement == null)
+            {
+                throw new ArgumentNullException(nameof(advertisement));
+            }
+
+            var updatedAdvertisement = _mapper.Map<Entities.Advertisement>(updateAdvertisementRequest);
+            updatedAdvertisement.Location = new Geolocation
+            {
+                Lat = advertisement.Latitude,
+                Lon = advertisement.Longitude
+            };
+            updatedAdvertisement = await _advertisementRepository.Update(updatedAdvertisement);
+            await SeedAdvertisementToElasticSearch(updatedAdvertisement);
+
+            return _mapper.Map<AdvertisementDto>(updatedAdvertisement);
         }
 
         public async Task<AdvertisementDto> Get(Guid id)
@@ -65,42 +92,53 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
                             )
                         )
                         .Query(q =>
-                            q.MultiMatch(c => c
-                                .Type(TextQueryType.PhrasePrefix)
-                                .Query(searchAdvertisementRequest.Query)
-                                .Boost(1.1)
-                                .Slop(2)
-                                .PrefixLength(2)
-                                .MaxExpansions(50)
-                                .Operator(Operator.Or)
-                                .MinimumShouldMatch(2)
-                                .ZeroTermsQuery(ZeroTermsQuery.All)
-                            ) &&
-                            q.Term(c =>
-                                c
-                                    .Boost(1.1)
-                                    .Field(f => f.CategoryId)
-                                    .Value(searchAdvertisementRequest.CategoryId)
-                            ) &&
-                            q.Range(c => c
-                                .Boost(1.1)
-                                .Field(p => p.EstimatedBarrowDays)
-                                .GreaterThanOrEquals(searchAdvertisementRequest.EstimatedBarrowDaysMin)
-                                .LessThanOrEquals(searchAdvertisementRequest.EstimatedBarrowDaysMax)
-                                .Relation(RangeRelation.Within)
-                            ) &&
-                            q.GeoDistance(g =>
-                                g
-                                    .Boost(1.1)
-                                    .Field(p => p.Location)
-                                    .DistanceType(GeoDistanceType.Plane)
-                                    .Location(
-                                        searchAdvertisementRequest.Latitude,
-                                        searchAdvertisementRequest.Longitude
-                                    )
-                                    .Distance(new Distance(10, DistanceUnit.Kilometers))
-                            )
-                        )
+                        {
+                            var queryContainer = q.MultiMatch(c => c
+                                                     .Type(TextQueryType.PhrasePrefix)
+                                                     .Query(searchAdvertisementRequest.Query)
+                                                     .Boost(1.1)
+                                                     .Slop(2)
+                                                     .PrefixLength(2)
+                                                     .MaxExpansions(50)
+                                                     .Operator(Operator.Or)
+                                                     .MinimumShouldMatch(2)
+                                                     .ZeroTermsQuery(ZeroTermsQuery.All)
+                                                 ) &&
+                                                 q.Term(c =>
+                                                     c
+                                                         .Boost(1.1)
+                                                         .Field(f => f.CategoryId)
+                                                         .Value(searchAdvertisementRequest.CategoryId)
+                                                 ) &&
+                                                 q.Range(c => c
+                                                     .Boost(1.1)
+                                                     .Field(p => p.EstimatedBarrowDays)
+                                                     .GreaterThanOrEquals(searchAdvertisementRequest
+                                                         .EstimatedBarrowDaysMin)
+                                                     .LessThanOrEquals(
+                                                         searchAdvertisementRequest.EstimatedBarrowDaysMax)
+                                                     .Relation(RangeRelation.Within)
+                                                 );
+
+                            if (searchAdvertisementRequest.Longitude.HasValue &&
+                                searchAdvertisementRequest.Latitude.HasValue)
+                            {
+                                return queryContainer &&
+                                       q.GeoDistance(g =>
+                                           g
+                                               .Boost(1.1)
+                                               .Field(p => p.Location)
+                                               .DistanceType(GeoDistanceType.Plane)
+                                               .Location(
+                                                   searchAdvertisementRequest.Latitude.Value,
+                                                   searchAdvertisementRequest.Longitude.Value
+                                               )
+                                               .Distance(new Distance(10, DistanceUnit.Kilometers))
+                                       );
+                            }
+
+                            return queryContainer;
+                        })
                 );
 
             var advertisementDtos = _mapper.Map<List<AdvertisementDto>>(searchResponse.Documents.ToList());
@@ -117,19 +155,6 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
             await _elasticSearchService.CreateIndexIfNotExists<Entities.Advertisement>(ElasticSearchConstants
                 .AdvertisementsIndex);
             await _elasticSearchService.AddOrUpdate(advertisement, ElasticSearchConstants.AdvertisementsIndex);
-        }
-
-        private static Entities.Advertisement SetInitialAdvertisementProperties(Entities.Advertisement advertisement)
-        {
-            advertisement.IsDeleted = false;
-            advertisement.CreatedAt = DateTime.UtcNow;
-            advertisement.StatusId = (int) AdvertisementStatuses.Created;
-            advertisement.Location = new Geolocation
-            {
-                Lat = advertisement.Latitude,
-                Lon = advertisement.Longitude
-            };
-            return advertisement;
         }
     }
 }

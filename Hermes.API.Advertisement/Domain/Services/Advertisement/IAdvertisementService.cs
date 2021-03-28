@@ -11,5 +11,6 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
         Task<AdvertisementDto> Create(CreateAdvertisementRequest createAdvertisementRequest);
         Task<AdvertisementDto> Get(Guid id);
         Task<PagedResponse<AdvertisementDto>> GetAll(SearchAdvertisementRequest searchAdvertisementRequest);
+        Task<AdvertisementDto> Update(UpdateAdvertisementRequest updateAdvertisementRequest);
     }
 }

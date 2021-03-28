@@ -70,12 +70,11 @@ namespace Hermes.API.Advertisement.Domain.Repositories.Advertisement
         private Document<Entities.Advertisement> BuildAdvertisementDocument(
             Entities.Advertisement advertisement)
         {
-            var guid = Guid.NewGuid();
-            var id = guid.ToString();
+            var guid = advertisement.Id != Guid.Empty ? advertisement.Id : Guid.NewGuid();
             advertisement.Id = guid;
             var document = new Document<Entities.Advertisement>
             {
-                Id = id,
+                Id = guid.ToString(),
                 Content = advertisement,
                 Expiry = 0
             };

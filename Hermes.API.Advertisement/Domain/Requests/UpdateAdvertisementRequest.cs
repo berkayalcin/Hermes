@@ -4,8 +4,9 @@ using Hermes.API.Advertisement.Domain.Models;
 
 namespace Hermes.API.Advertisement.Domain.Requests
 {
-    public class CreateAdvertisementRequest
+    public class UpdateAdvertisementRequest
     {
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string DamageInformation { get; set; }
