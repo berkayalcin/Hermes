@@ -68,6 +68,17 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
             return _mapper.Map<AdvertisementDto>(updatedAdvertisement);
         }
 
+        public async Task Delete(Guid id)
+        {
+            var advertisement = await _advertisementRepository.Get(id);
+            if (advertisement == null)
+            {
+                throw new ArgumentNullException(nameof(advertisement));
+            }
+
+            await _advertisementRepository.Delete(id);
+        }
+
         public async Task<AdvertisementDto> Get(Guid id)
         {
             var advertisement = await _advertisementRepository.Get(id);

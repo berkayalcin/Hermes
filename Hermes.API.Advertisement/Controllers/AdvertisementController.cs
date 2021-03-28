@@ -31,6 +31,13 @@ namespace Hermes.API.Advertisement.Controllers
             return Ok(advertisement);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _advertisementService.Delete(id);
+            return Ok();
+        }
+
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] SearchAdvertisementRequest searchAdvertisementRequest)
         {
