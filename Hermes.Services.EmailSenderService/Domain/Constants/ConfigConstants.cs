@@ -4,6 +4,9 @@ namespace Hermes.Services.EmailSenderService.Domain.Constants
 {
     public class ConfigConstants
     {
+        public const string EmailServer = "EmailServer";
+        public const string EmailAddress = "EmailAddress";
+        public const string EmailPassword = "EmailPassword";
         public const string MicrosoftLogsSourceName = "Microsoft";
         public const string ElasticSearchUrl = "ElasticSearchOptions:HostUrls";
         public const string ElasticSearchPassword = "ElasticSearchOptions:Password";

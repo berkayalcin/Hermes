@@ -441,6 +441,9 @@ services:
       dockerfile: Dockerfile-Email-Sender-Service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - EmailServer=${EmailServer}
+      - EmailAddress=${EmailAddress}
+      - EmailPassword=${EmailPassword}
     networks:
       hermes-network:
         ipv4_address: 172.16.101.25
