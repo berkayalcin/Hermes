@@ -378,6 +378,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - SERVICE_URL=http://media-api-1:5051
+      - AwsS3SecretKey=${AwsS3SecretKey}
+      - AwsS3AccessKeyId=${AwsS3AccessKeyId}
     networks:
       hermes-network:
         ipv4_address: 172.16.101.23
@@ -413,6 +415,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - SERVICE_URL=http://media-api-2:5052
+      - AwsS3SecretKey=${AwsS3SecretKey}
+      - AwsS3AccessKeyId=${AwsS3AccessKeyId}
     networks:
       hermes-network:
         ipv4_address: 172.16.101.24

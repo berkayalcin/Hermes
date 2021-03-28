@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Hermes.API.Advertisement.Domain.Authentication
+namespace Hermes.API.Media.Domain.Authentication
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class HermesAuthorizeAttribute : Attribute, IAuthorizationFilter

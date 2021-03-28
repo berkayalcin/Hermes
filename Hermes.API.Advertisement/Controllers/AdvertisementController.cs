@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using Hermes.API.Advertisement.Domain.Authentication;
+using Hermes.API.Advertisement.Domain.Constants;
 using Hermes.API.Advertisement.Domain.Requests;
 using Hermes.API.Advertisement.Domain.Services.Advertisement;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +34,7 @@ namespace Hermes.API.Advertisement.Controllers
         }
 
         [HttpDelete("{id}")]
+        [HermesAuthorize(UserRoles.Administrator)]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _advertisementService.Delete(id);

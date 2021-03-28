@@ -21,43 +21,33 @@
       "UseServiceDiscovery": true
     },
     {
-      "DownstreamPathTemplate": "/v1/home",
+      "DownstreamPathTemplate": "/{url}",
       "DownstreamScheme": "http",
       "LoadBalancerOptions": {
         "Type": "LeastConnection"
       },
-      "UpstreamPathTemplate": "/v1/catalog",
+      "UpstreamPathTemplate": "/catalog-gateway/{url}",
       "ServiceName": "Hermes-Catalog-API",
       "UseServiceDiscovery": true
     },
     {
-      "DownstreamPathTemplate": "/v1/home",
+      "DownstreamPathTemplate": "/{url}",
       "DownstreamScheme": "http",
       "LoadBalancerOptions": {
         "Type": "LeastConnection"
       },
-      "UpstreamPathTemplate": "/v1/location",
+      "UpstreamPathTemplate": "/location-gateway/{url}",
       "ServiceName": "Hermes-Location-API",
       "UseServiceDiscovery": true
     },
     {
-      "DownstreamPathTemplate": "/v1/home",
+      "DownstreamPathTemplate": "/{url}",
       "DownstreamScheme": "http",
       "LoadBalancerOptions": {
         "Type": "LeastConnection"
       },
-      "UpstreamPathTemplate": "/v1/media",
+      "UpstreamPathTemplate": "/media-gateway/{url}",
       "ServiceName": "Hermes-Media-API",
-      "UseServiceDiscovery": true
-    },
-    {
-      "DownstreamPathTemplate": "/v1/home",
-      "DownstreamScheme": "http",
-      "LoadBalancerOptions": {
-        "Type": "LeastConnection"
-      },
-      "UpstreamPathTemplate": "/v1/notification",
-      "ServiceName": "Hermes-Notification-API",
       "UseServiceDiscovery": true
     }
   ],
