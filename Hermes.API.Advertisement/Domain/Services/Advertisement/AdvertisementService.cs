@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Hermes.API.Advertisement.Domain.Constants;
+using Hermes.API.Advertisement.Domain.Entities;
 using Hermes.API.Advertisement.Domain.Enums;
 using Hermes.API.Advertisement.Domain.Models;
+using Hermes.API.Advertisement.Domain.Proxies;
 using Hermes.API.Advertisement.Domain.Repositories.Advertisement;
 using Hermes.API.Advertisement.Domain.Requests;
 using Hermes.API.Advertisement.Domain.Responses;
@@ -17,15 +19,19 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
     public class AdvertisementService : IAdvertisementService
     {
         private readonly IAdvertisementRepository _advertisementRepository;
+        private readonly ICategoryApiProxy _categoryApiProxy;
         private readonly IElasticSearchService _elasticSearchService;
         private readonly IMapper _mapper;
+        private readonly IUserApiProxy _userApiProxy;
 
         public AdvertisementService(IAdvertisementRepository advertisementRepository, IMapper mapper,
-            IElasticSearchService elasticSearchService)
+            IElasticSearchService elasticSearchService, ICategoryApiProxy categoryApiProxy, IUserApiProxy userApiProxy)
         {
             _advertisementRepository = advertisementRepository;
             _mapper = mapper;
             _elasticSearchService = elasticSearchService;
+            _categoryApiProxy = categoryApiProxy;
+            _userApiProxy = userApiProxy;
         }
 
         public async Task<AdvertisementDto> Create(CreateAdvertisementRequest createAdvertisementRequest)
@@ -39,12 +45,12 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
                 Lat = advertisement.Latitude,
                 Lon = advertisement.Longitude
             };
+
+            advertisement.Category = await TryGetCategory(createAdvertisementRequest.CategoryId);
+            advertisement.User = await TryGetUser(createAdvertisementRequest.UserId);
             advertisement = await _advertisementRepository.Create(advertisement);
 
             await SeedAdvertisementToElasticSearch(advertisement);
-
-            // TODO : Get Category From Category API
-            // TODO : Get User From User API
             return _mapper.Map<AdvertisementDto>(advertisement);
         }
 
@@ -57,16 +63,16 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
             }
 
             var updatedAdvertisement = _mapper.Map<Entities.Advertisement>(updateAdvertisementRequest);
-            updatedAdvertisement.Location = new Geolocation
-            {
-                Lat = advertisement.Latitude,
-                Lon = advertisement.Longitude
-            };
+            updatedAdvertisement.Location = BuildGeolocation(advertisement);
+            updatedAdvertisement.Category = await TryGetCategory(updateAdvertisementRequest.CategoryId);
+            updatedAdvertisement.User = await TryGetUser(updateAdvertisementRequest.UserId);
+
             updatedAdvertisement = await _advertisementRepository.Update(updatedAdvertisement);
             await SeedAdvertisementToElasticSearch(updatedAdvertisement);
 
             return _mapper.Map<AdvertisementDto>(updatedAdvertisement);
         }
+
 
         public async Task Delete(Guid id)
         {
@@ -159,6 +165,38 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
                 Items = advertisementDtos,
                 TotalCount = searchResponse.Total
             };
+        }
+
+        private static Geolocation BuildGeolocation(Entities.Advertisement advertisement)
+        {
+            return new()
+            {
+                Lat = advertisement.Latitude,
+                Lon = advertisement.Longitude
+            };
+        }
+
+        private async Task<Category> TryGetCategory(long categoryId)
+        {
+            var category = await _categoryApiProxy.Get(categoryId);
+            if (category == null)
+            {
+                throw new InvalidOperationException(string.Format(ExceptionMessages.CategoryWithIdIsNotExists,
+                    categoryId));
+            }
+
+            return _mapper.Map<Category>(category);
+        }
+
+        private async Task<User> TryGetUser(long userId)
+        {
+            var user = await _userApiProxy.GetUser(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException(string.Format(ExceptionMessages.UserWithIdIsNotExists, userId));
+            }
+
+            return _mapper.Map<User>(user);
         }
 
         private async Task SeedAdvertisementToElasticSearch(Entities.Advertisement advertisement)

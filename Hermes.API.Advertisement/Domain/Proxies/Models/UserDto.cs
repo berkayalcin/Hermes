@@ -1,4 +1,4 @@
-namespace Hermes.API.Advertisement.Domain.Models
+namespace Hermes.API.Advertisement.Domain.Proxies.Models
 {
     public class UserDto
     {

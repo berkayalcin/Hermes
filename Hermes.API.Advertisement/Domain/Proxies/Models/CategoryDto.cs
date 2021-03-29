@@ -1,6 +1,6 @@
-namespace Hermes.API.Advertisement.Domain.Entities
+namespace Hermes.API.Advertisement.Domain.Proxies.Models
 {
-    public class Category
+    public class CategoryDto
     {
         public long Id { get; set; }
         public string Name { get; set; }

@@ -12,6 +12,8 @@ namespace Hermes.API.Advertisement.Domain.Constants
         public const string ApplicationName = "Hermes-Advertisement-API";
         public const string SerilogEnvironmentPropertyName = "Environment";
 
+        public const string GatewayBaseUrl = "GatewayBaseUrl";
+
         public static readonly string ElasticSearchLogsIndexFormat =
             $"hermes-advertisement-api-{DateTime.UtcNow:yyyy-MM-dd}";
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Hermes.API.Advertisement.Domain.Proxies.Models;
 
 namespace Hermes.API.Advertisement.Domain.Models
 {
@@ -15,7 +16,7 @@ namespace Hermes.API.Advertisement.Domain.Models
         public long UserId { get; set; }
         public UserDto User { get; set; }
 
-        public Guid CategoryId { get; set; }
+        public long CategoryId { get; set; }
         public CategoryDto Category { get; set; }
 
         public List<AdvertisementImageDto> Images { get; set; }

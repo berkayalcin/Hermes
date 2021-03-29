@@ -1,5 +1,6 @@
 using AutoMapper;
 using Hermes.API.Advertisement.Domain.Models;
+using Hermes.API.Advertisement.Domain.Proxies.Models;
 using Hermes.API.Advertisement.Domain.Requests;
 
 namespace Hermes.API.Advertisement.Domain.Mappers

@@ -24,7 +24,7 @@ namespace Hermes.API.Advertisement.Domain.Entities
         public long UserId { get; set; }
         public User User { get; set; }
 
-        public Guid CategoryId { get; set; }
+        public long CategoryId { get; set; }
         public Category Category { get; set; }
 
         public List<AdvertisementImage> Images { get; set; }

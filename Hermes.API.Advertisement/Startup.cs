@@ -7,9 +7,11 @@ using Couchbase.Extensions.DependencyInjection;
 using Elasticsearch.Net;
 using FluentValidation.AspNetCore;
 using Hermes.API.Advertisement.Domain.Authentication;
+using Hermes.API.Advertisement.Domain.Constants;
 using Hermes.API.Advertisement.Domain.Filters;
 using Hermes.API.Advertisement.Domain.Mappers;
 using Hermes.API.Advertisement.Domain.Models;
+using Hermes.API.Advertisement.Domain.Proxies;
 using Hermes.API.Advertisement.Domain.Repositories.Advertisement;
 using Hermes.API.Advertisement.Domain.Responses;
 using Hermes.API.Advertisement.Domain.Services.Advertisement;
@@ -25,6 +27,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Nest;
+using Polly;
 
 namespace Hermes.API.Advertisement
 {
@@ -69,6 +72,27 @@ namespace Hermes.API.Advertisement
 
             // Swagger
             AddSwagger(services);
+
+            // Proxies
+
+            services.AddHttpClient<ICategoryApiProxy, CategoryApiProxy>
+                (typeof(CategoryApiProxy).FullName, c =>
+                {
+                    c.BaseAddress = new Uri(Configuration[ConfigConstants.GatewayBaseUrl]);
+                    c.DefaultRequestHeaders.Add("Accept", "application/json");
+                })
+                .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(50)))
+                .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+
+            services.AddHttpClient<IUserApiProxy, UserApiProxy>
+                (typeof(UserApiProxy).FullName, c =>
+                {
+                    c.BaseAddress = new Uri(Configuration[ConfigConstants.GatewayBaseUrl]);
+                    c.DefaultRequestHeaders.Add("Accept", "application/json");
+                })
+                .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromMilliseconds(50)))
+                .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+
 
             // Auth
             RegisterJwtOptions(services);
