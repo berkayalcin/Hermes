@@ -231,6 +231,7 @@ services:
       - couchbase1
       - couchbase2
       - es01
+      - hermes_sqlserver
     image: yalcinberkay/hermes-catalog-api
     build:
       context: .
@@ -266,6 +267,7 @@ services:
       - couchbase1
       - couchbase2
       - es01
+      - hermes_sqlserver
     image: yalcinberkay/hermes-catalog-api
     build:
       context: .

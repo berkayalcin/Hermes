@@ -1,10 +1,21 @@
+using System.Linq;
 using FluentValidation.AspNetCore;
+using Hermes.API.Catalog.Domain.Data;
+using Hermes.API.Catalog.Domain.Filters;
+using Hermes.API.Catalog.Domain.Mappers;
+using Hermes.API.Catalog.Domain.Repositories;
+using Hermes.API.Catalog.Domain.Responses;
+using Hermes.API.Catalog.Domain.Services;
+using Hermes.API.Catalog.Domain.Validators;
 using Hermes.API.Catalog.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 namespace Hermes.API.Catalog
@@ -21,33 +32,73 @@ namespace Hermes.API.Catalog
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(options => { options.AllowEmptyInputInBodyModelBinding = true; })
-                .AddFluentValidation(o =>
-                    {
-                        // TODO Add Validators.
-                    }
+            services.AddControllers(options =>
+                {
+                    options.AllowEmptyInputInBodyModelBinding = true;
+                    options.Filters.Add(typeof(HttpGlobalExceptionFilter));
+                })
+                .AddFluentValidation(o => { o.RegisterValidatorsFromAssemblyContaining<CategoryDtoValidator>(); }
                 )
                 .AddJsonOptions(opt => { opt.JsonSerializerOptions.IgnoreNullValues = true; }
-                );
+                )
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.InvalidModelStateResponseFactory = context =>
+                    {
+                        var errors = context.ModelState.Values.Where(v => v.Errors.Count > 0)
+                            .SelectMany(v => v.Errors)
+                            .Select(v => v.ErrorMessage)
+                            .ToList();
+                        return new BadRequestObjectResult(new ValidationErrorResponse
+                        {
+                            Errors = errors
+                        });
+                    };
+                });
 
+            // Swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Hermes.API.Catalog", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Hermes Catalog API", Version = "v1"});
             });
 
+            // Services
+            services.AddScoped<ICategoryService, CategoryService>();
+
+            // Repositories
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+            // Data
+            var connectionString = Configuration.GetValue<string>("HermesConnectionString");
+            services
+                .AddDbContext<HermesDbContext>(options => { options.UseSqlServer(connectionString); },
+                    ServiceLifetime.Transient);
+
+            // Mappers
+            services.AddAutoMapper(typeof(MappingProfile));
+
+            // Authentication
+
+            // Server Configuration
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
             services.AddConsulConfig(Configuration);
             services.AddHealthChecks();
+            services.AddMiniProfiler(options => { options.RouteBasePath = "/profiles"; })
+                .AddEntityFramework();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hermes.API.Catalog v1"));
-            }
+            app.UseMiniProfiler();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", Configuration["ApplicationName"]); });
 
             app.UseHealthChecks("/healthcheck");
 
@@ -55,7 +106,14 @@ namespace Hermes.API.Catalog
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
+
             app.UseRouting();
+
+            var option = new RewriteOptions();
+            option.AddRedirect("^$", "swagger");
+
+            app.UseRewriter(option);
 
             app.UseAuthorization();
 
