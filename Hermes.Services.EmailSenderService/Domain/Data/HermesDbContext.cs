@@ -1,4 +1,5 @@
 using Hermes.Services.EmailSenderService.Domain.Entities;
+using Hermes.Services.EmailSenderService.Domain.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -25,6 +26,13 @@ namespace Hermes.Services.EmailSenderService.Domain.Data
         }
 
         public DbSet<EmailOutboxItem> EmailOutboxItems { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new EmailOutboxItemConfiguration());
+            base.OnModelCreating(modelBuilder);
+        }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

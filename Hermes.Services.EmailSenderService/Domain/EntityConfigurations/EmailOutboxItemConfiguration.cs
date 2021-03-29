@@ -9,6 +9,7 @@ namespace Hermes.Services.EmailSenderService.Domain.EntityConfigurations
         public void Configure(EntityTypeBuilder<EmailOutboxItem> builder)
         {
             builder.Property(e => e.Id)
+                .IsRequired()
                 .HasDefaultValueSql("newid()")
                 .ValueGeneratedOnAdd();
             builder.Property(e => e.Body)

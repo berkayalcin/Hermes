@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using System.Net.Mail;
 using Hermes.Services.EmailSenderService.Domain.BackgroundServices;
 using Hermes.Services.EmailSenderService.Domain.Constants;
 using Hermes.Services.EmailSenderService.Domain.Data;
@@ -48,8 +50,19 @@ namespace Hermes.Services.EmailSenderService
                 Server = Environment.GetEnvironmentVariable(ConfigConstants.EmailServer),
                 EmailAddress = Environment.GetEnvironmentVariable(ConfigConstants.EmailAddress),
                 Password = Environment.GetEnvironmentVariable(ConfigConstants.EmailPassword),
-                Port = 543
+                Port = 587,
+                SenderName = "Hermes"
             };
+            var smtpClient = new SmtpClient(smtpOptions.EmailAddress, smtpOptions.Port)
+            {
+                Credentials = new NetworkCredential(smtpOptions.EmailAddress, smtpOptions.Password),
+                UseDefaultCredentials = false,
+                Port = smtpOptions.Port,
+                Host = smtpOptions.Server,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network
+            };
+            services.AddSingleton(smtpClient);
             services.AddSingleton(smtpOptions);
         }
 

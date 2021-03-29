@@ -23,13 +23,17 @@ namespace Hermes.Services.EmailSenderService.Migrations
             {
                 b.Property<Guid>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("uniqueidentifier");
+                    .HasColumnType("uniqueidentifier")
+                    .HasDefaultValueSql("newid()");
 
                 b.Property<string>("Body")
+                    .IsRequired()
                     .HasColumnType("nvarchar(max)");
 
                 b.Property<DateTime>("CreatedAt")
-                    .HasColumnType("datetime2");
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("datetime2")
+                    .HasDefaultValueSql("getutcdate()");
 
                 b.Property<string>("Error")
                     .HasColumnType("nvarchar(max)");
