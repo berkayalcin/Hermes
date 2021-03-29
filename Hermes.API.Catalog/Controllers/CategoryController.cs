@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using Hermes.API.Catalog.Domain.Authentication;
+using Hermes.API.Catalog.Domain.Constants;
 using Hermes.API.Catalog.Domain.Models;
 using Hermes.API.Catalog.Domain.Requests;
 using Hermes.API.Catalog.Domain.Services;
@@ -18,6 +20,7 @@ namespace Hermes.API.Catalog.Controllers
         }
 
         [HttpPost]
+        [HermesAuthorize(UserRoles.Administrator)]
         public async Task<IActionResult> Create([FromBody] CategoryDto category)
         {
             var categoryDto = await _categoryService.Create(category);
@@ -25,6 +28,7 @@ namespace Hermes.API.Catalog.Controllers
         }
 
         [HttpPut("{id}")]
+        [HermesAuthorize(UserRoles.Administrator)]
         public async Task<IActionResult> Update(long id, [FromBody] CategoryDto category)
         {
             var categoryDto = await _categoryService.Update(category);
@@ -32,6 +36,7 @@ namespace Hermes.API.Catalog.Controllers
         }
 
         [HttpDelete("{id}")]
+        [HermesAuthorize(UserRoles.Administrator)]
         public async Task<IActionResult> Delete(long id)
         {
             await _categoryService.Delete(id);
@@ -39,6 +44,7 @@ namespace Hermes.API.Catalog.Controllers
         }
 
         [HttpGet("{id}")]
+        [HermesAuthorize]
         public async Task<IActionResult> Get(long id)
         {
             var category = await _categoryService.Get(id);
@@ -51,6 +57,7 @@ namespace Hermes.API.Catalog.Controllers
         }
 
         [HttpGet]
+        [HermesAuthorize]
         public async Task<IActionResult> GetAll([FromQuery] SearchCategoryRequest searchCategoryRequest)
         {
             var categories = await _categoryService.GetAll(searchCategoryRequest);
