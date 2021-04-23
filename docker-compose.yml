@@ -10,7 +10,7 @@ services:
       - couchbase1-data:/data/couchbase1
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.10
+        ipv4_address: 172.16.101.34
     ports:
       - "8091:8091"
       - "8092:8092"
@@ -38,7 +38,7 @@ services:
       - couchbase2-data:/data/couchbase2
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.11
+        ipv4_address: 172.16.101.33
     links:
       - couchbase1
     depends_on:
@@ -59,7 +59,7 @@ services:
       - couchbase3-data:/data/couchbase3
     networks:
       hermes-network:
-        ipv4_address: 172.16.101.12
+        ipv4_address: 172.16.101.32
     links:
       - couchbase2
     depends_on:
