@@ -1,5 +1,6 @@
 using System.Linq;
 using FluentValidation.AspNetCore;
+using Hermes.API.Catalog.Domain.Authentication;
 using Hermes.API.Catalog.Domain.Data;
 using Hermes.API.Catalog.Domain.Filters;
 using Hermes.API.Catalog.Domain.Mappers;
@@ -77,7 +78,8 @@ namespace Hermes.API.Catalog
             // Mappers
             services.AddAutoMapper(typeof(MappingProfile));
 
-            // Authentication
+            // Auth
+            RegisterJwtOptions(services);
 
             // Server Configuration
             services.Configure<ForwardedHeadersOptions>(options =>
@@ -89,6 +91,13 @@ namespace Hermes.API.Catalog
             services.AddHealthChecks();
             services.AddMiniProfiler(options => { options.RouteBasePath = "/profiles"; })
                 .AddEntityFramework();
+        }
+
+        private void RegisterJwtOptions(IServiceCollection services)
+        {
+            var jwtConfig = new JwtOptions();
+            Configuration.Bind("JwtAuth", jwtConfig);
+            services.AddSingleton(jwtConfig);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

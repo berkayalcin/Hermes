@@ -36,7 +36,7 @@ namespace Hermes.API.Advertisement.Domain.Proxies
         {
             var tokenResponse = await _userApiProxy.GetToken();
             var token = tokenResponse.Token;
-            return token;
+            return $"Bearer {token}";
         }
     }
 }
