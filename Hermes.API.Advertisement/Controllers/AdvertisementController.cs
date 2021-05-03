@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Hermes.API.Advertisement.Controllers
 {
     [ApiController, Route("v1/[controller]")]
+    [HermesAuthorize]
     public class AdvertisementController : Controller
     {
         private readonly IAdvertisementService _advertisementService;

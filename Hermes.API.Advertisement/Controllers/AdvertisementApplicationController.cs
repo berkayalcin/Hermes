@@ -1,0 +1,41 @@
+using System.Threading.Tasks;
+using Hermes.API.Advertisement.Domain.Authentication;
+using Hermes.API.Advertisement.Domain.Models;
+using Hermes.API.Advertisement.Domain.Requests;
+using Hermes.API.Advertisement.Domain.Services.AdvertisementApplication;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Hermes.API.Advertisement.Controllers
+{
+    [ApiController, Route("v1/[controller]")]
+    [HermesAuthorize]
+    public class AdvertisementApplicationController : Controller
+    {
+        private readonly IAdvertisementApplicationService _advertisementApplicationService;
+
+        public AdvertisementApplicationController(IAdvertisementApplicationService advertisementApplicationService)
+        {
+            _advertisementApplicationService = advertisementApplicationService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get(
+            [FromQuery] SearchAdvertisementApplicationRequest searchAdvertisementApplicationRequest)
+        {
+            var applications = await _advertisementApplicationService.GetAll(searchAdvertisementApplicationRequest);
+            if (applications == null || applications.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(applications);
+        }
+
+        [HttpPost("apply")]
+        public async Task<IActionResult> Apply([FromBody] AdvertisementApplicationDto advertisementApplicationDto)
+        {
+            var response = await _advertisementApplicationService.Apply(advertisementApplicationDto);
+            return Created("/v1/AdvertisementApplication", response);
+        }
+    }
+}

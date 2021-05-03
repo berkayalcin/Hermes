@@ -1,6 +1,7 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -39,9 +40,17 @@ namespace Hermes.API.Advertisement.Domain.Authentication
                     return;
                 }
 
-                if (_roles == null || _roles.Length == 0) return;
+                if (_roles == null || _roles.Length == 0)
+                {
+                    SetTokenAndClaimsToSession(context, jwtToken, token);
+                    return;
+                }
 
-                if (HasRequiredRoles(jwtToken)) return;
+                if (HasRequiredRoles(jwtToken))
+                {
+                    SetTokenAndClaimsToSession(context, jwtToken, token);
+                    return;
+                }
 
                 AuthenticationHelper.SetContextResultAsUnauthorized(context);
             }
@@ -59,6 +68,20 @@ namespace Hermes.API.Advertisement.Domain.Authentication
                 .ToList();
             var hasRequiredRoles = _roles.Any(r => userRoles.Contains(r));
             return hasRequiredRoles;
+        }
+
+        private void SetTokenAndClaimsToSession(AuthorizationFilterContext context, JwtSecurityToken jwtSecurityToken,
+            string bearerToken)
+        {
+            var httpContextAccessor = context.HttpContext.RequestServices.GetRequiredService<IHttpContextAccessor>();
+            var session = httpContextAccessor.HttpContext!.Session;
+            foreach (var claim in jwtSecurityToken!.Claims)
+            {
+                session.Remove(claim.Type);
+                session.SetString(claim.Type, claim.Value);
+            }
+
+            session.SetString("AuthToken", bearerToken);
         }
     }
 }

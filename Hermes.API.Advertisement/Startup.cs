@@ -8,21 +8,26 @@ using Elasticsearch.Net;
 using FluentValidation.AspNetCore;
 using Hermes.API.Advertisement.Domain.Authentication;
 using Hermes.API.Advertisement.Domain.Constants;
+using Hermes.API.Advertisement.Domain.Data;
 using Hermes.API.Advertisement.Domain.Filters;
 using Hermes.API.Advertisement.Domain.Mappers;
 using Hermes.API.Advertisement.Domain.Models;
 using Hermes.API.Advertisement.Domain.Proxies;
 using Hermes.API.Advertisement.Domain.Repositories.Advertisement;
+using Hermes.API.Advertisement.Domain.Repositories.AdvertisementApplication;
 using Hermes.API.Advertisement.Domain.Responses;
 using Hermes.API.Advertisement.Domain.Services.Advertisement;
+using Hermes.API.Advertisement.Domain.Services.AdvertisementApplication;
 using Hermes.API.Advertisement.Domain.Services.AdvertisementBucketProvider;
 using Hermes.API.Advertisement.Domain.Services.ElasticSearch;
 using Hermes.API.Advertisement.Domain.Validators;
 using Hermes.API.Advertisement.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -101,6 +106,12 @@ namespace Hermes.API.Advertisement
             services.AddConsulConfig(Configuration);
             services.AddHealthChecks();
 
+            // Ef Core
+            var connectionString = Configuration.GetValue<string>("HermesConnectionString");
+            services
+                .AddDbContext<HermesDbContext>(options => { options.UseSqlServer(connectionString); },
+                    ServiceLifetime.Transient);
+
             // Couchbase
             AddCouchbase(services);
 
@@ -109,12 +120,21 @@ namespace Hermes.API.Advertisement
 
             // Services
             services.AddScoped<IAdvertisementService, AdvertisementService>();
+            services.AddScoped<IAdvertisementApplicationService, AdvertisementApplicationService>();
 
             // Repositories
             services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
+            services.AddScoped<IAdvertisementApplicationRepository, AdvertisementApplicationRepository>();
 
             // Elastic Search
             AddElastic(services, Configuration);
+
+            // Other
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            // Session
+            services.AddDistributedMemoryCache();
+            services.AddSession();
         }
 
         private static void AddElastic(IServiceCollection services, IConfiguration configuration)
@@ -206,6 +226,8 @@ namespace Hermes.API.Advertisement
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiniProfiler();
+
+            app.UseSession();
 
             app.UseSwagger();
 

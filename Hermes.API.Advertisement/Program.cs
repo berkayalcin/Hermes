@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using Hermes.API.Advertisement.Domain.Constants;
+using Hermes.API.Advertisement.Domain.Data;
+using Hermes.API.Advertisement.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -15,7 +17,7 @@ namespace Hermes.API.Advertisement
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().MigrateDatabase<HermesDbContext>().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

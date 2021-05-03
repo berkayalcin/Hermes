@@ -1,4 +1,5 @@
 using AutoMapper;
+using Hermes.API.Advertisement.Domain.Entities;
 using Hermes.API.Advertisement.Domain.Models;
 using Hermes.API.Advertisement.Domain.Proxies.Models;
 using Hermes.API.Advertisement.Domain.Requests;
@@ -12,9 +13,10 @@ namespace Hermes.API.Advertisement.Domain.Mappers
             CreateMap<Entities.Advertisement, AdvertisementDto>().ReverseMap();
             CreateMap<CreateAdvertisementRequest, Entities.Advertisement>();
             CreateMap<UpdateAdvertisementRequest, Entities.Advertisement>();
-            CreateMap<Entities.Category, CategoryDto>().ReverseMap();
-            CreateMap<Entities.User, UserDto>().ReverseMap();
-            CreateMap<Entities.AdvertisementImage, AdvertisementImageDto>().ReverseMap();
+            CreateMap<Category, CategoryDto>().ReverseMap();
+            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<AdvertisementImage, AdvertisementImageDto>().ReverseMap();
+            CreateMap<AdvertisementApplication, AdvertisementApplicationDto>().ReverseMap();
         }
     }
 }
