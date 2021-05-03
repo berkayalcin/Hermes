@@ -56,9 +56,13 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
             throw new NotImplementedException();
         }
 
-        public Task<AdvertisementApplicationDto> GetById(Guid applicationId)
+        public async Task<AdvertisementApplicationDto> GetById(long applicationId)
         {
-            throw new NotImplementedException();
+            var advertisementApplication = await _advertisementApplicationRepository
+                .Get(a => a.Id == applicationId);
+            return advertisementApplication == null
+                ? null
+                : _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
         }
 
         public async Task<AdvertisementApplicationDto> GetByAdvertisementIdAndApplicantId(Guid advertisementId,
@@ -68,10 +72,9 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
                 .Get(a =>
                     a.AdvertisementId == advertisementId &&
                     a.ApplicantId == applicantId);
-            if (advertisementApplication == null)
-                return null;
-
-            return _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
+            return advertisementApplication == null
+                ? null
+                : _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
         }
 
         public async Task<AdvertisementApplicationDto> Apply(AdvertisementApplicationDto advertisementApplicationDto)
