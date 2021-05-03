@@ -93,6 +93,7 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
             var advertisementApplication = _mapper.Map<Entities.AdvertisementApplication>(advertisementApplicationDto);
             advertisementApplication.IsDeleted = false;
             advertisementApplication.CreatedAt = DateTime.UtcNow;
+            advertisementApplication.StatusId = (int) AdvertisementApplicationStatuses.Created;
             await _advertisementApplicationRepository.Insert(advertisementApplication);
 
             advertisement.StatusId = (int) AdvertisementStatuses.WaitingLenderApproval;

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Hermes.API.Advertisement.Domain.Entities;
+using Hermes.API.Advertisement.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,6 +25,10 @@ namespace Hermes.API.Advertisement.Domain.EntityConfigurations
 
             builder.Property(p => p.IsDeleted)
                 .HasDefaultValueSql("0")
+                .IsRequired();
+
+            builder.Property(p => p.StatusId)
+                .HasDefaultValue(AdvertisementApplicationStatuses.Created)
                 .IsRequired();
 
             builder.Property(p => p.CreatedAt)
