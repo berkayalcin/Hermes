@@ -14,5 +14,8 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
         Task<AdvertisementApplicationDto> Apply(AdvertisementApplicationDto advertisementApplicationDto);
         Task Approve(Guid applicationId);
         Task Reject(Guid applicationId);
+
+        Task<AdvertisementApplicationDto> GetByAdvertisementIdAndApplicantId(Guid advertisementId,
+            long applicantId);
     }
 }

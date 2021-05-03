@@ -61,15 +61,17 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
             throw new NotImplementedException();
         }
 
-        public Task<AdvertisementApplicationDto> GetByAdvertisementIdAndApplicantId(Guid advertisementId,
+        public async Task<AdvertisementApplicationDto> GetByAdvertisementIdAndApplicantId(Guid advertisementId,
             long applicantId)
         {
-            if (!IsSameUserOrAdmin(applicantId))
-            {
-                throw new UnauthorizedAccessException();
-            }
+            var advertisementApplication = await _advertisementApplicationRepository
+                .Get(a =>
+                    a.AdvertisementId == advertisementId &&
+                    a.ApplicantId == applicantId);
+            if (advertisementApplication == null)
+                return null;
 
-            throw new NotImplementedException();
+            return _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
         }
 
         public async Task<AdvertisementApplicationDto> Apply(AdvertisementApplicationDto advertisementApplicationDto)

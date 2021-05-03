@@ -19,6 +19,9 @@ namespace Hermes.API.Advertisement.Domain.EntityConfigurations
             builder.Property(p => p.ApplicantId)
                 .IsRequired();
 
+            builder.Property(p => p.AdvertisementId)
+                .IsRequired();
+
             builder.Property(p => p.IsDeleted)
                 .HasDefaultValueSql("0")
                 .IsRequired();

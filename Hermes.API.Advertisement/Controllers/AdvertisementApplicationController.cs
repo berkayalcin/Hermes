@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Hermes.API.Advertisement.Domain.Authentication;
 using Hermes.API.Advertisement.Domain.Models;
@@ -36,6 +37,16 @@ namespace Hermes.API.Advertisement.Controllers
         {
             var response = await _advertisementApplicationService.Apply(advertisementApplicationDto);
             return Created("/v1/AdvertisementApplication", response);
+        }
+
+        [HttpGet("{advertisementId}")]
+        public async Task<IActionResult> Get(Guid advertisementId, [FromQuery] long applicantId)
+        {
+            var advertisementApplication =
+                await _advertisementApplicationService.GetByAdvertisementIdAndApplicantId(advertisementId, applicantId);
+            if (advertisementApplication == null)
+                return NotFound();
+            return Ok(advertisementApplication);
         }
     }
 }
