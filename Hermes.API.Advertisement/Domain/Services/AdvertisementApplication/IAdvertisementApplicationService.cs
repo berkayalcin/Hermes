@@ -10,10 +10,11 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
     {
         Task<List<AdvertisementApplicationDto>> GetAll(
             SearchAdvertisementApplicationRequest searchAdvertisementApplicationRequest);
+
         Task<AdvertisementApplicationDto> GetById(long applicationId);
         Task<AdvertisementApplicationDto> Apply(AdvertisementApplicationDto advertisementApplicationDto);
-        Task Approve(Guid applicationId);
-        Task Reject(Guid applicationId);
+        Task Approve(long applicationId);
+        Task Reject(long applicationId);
 
         Task<AdvertisementApplicationDto> GetByAdvertisementIdAndApplicantId(Guid advertisementId,
             long applicantId);

@@ -7,8 +7,9 @@ namespace Hermes.API.Advertisement.Domain.Models
     public class AdvertisementApplicationDto
     {
         public long Id { get; set; }
-        public int EstimatedBarrowDays { get; set; }
+        public int EstimatedBorrowDays { get; set; }
         public long ApplicantId { get; set; }
+        public UserDto Applicant { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid AdvertisementId { get; set; }
         public int StatusId { get; set; }

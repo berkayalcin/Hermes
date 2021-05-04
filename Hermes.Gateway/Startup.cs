@@ -30,7 +30,7 @@ namespace Hermes.Gateway
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Hermes API Gateway", Version = "v1"});
             });
-            
+
             services
                 .AddOcelot(Configuration)
                 .AddConsul()

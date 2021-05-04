@@ -4,6 +4,7 @@ namespace Hermes.API.Advertisement.Domain.Enums
     {
         Created = 1,
         WaitingBorrowerApproval = 2,
-        WaitingLenderApproval = 3
+        WaitingLenderApproval = 3,
+        Closed = 4
     }
 }

@@ -8,16 +8,43 @@ namespace Hermes.API.Catalog.Migrations
         {
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "Id", "Description", "ImageUrl", "Name", "Slug" },
+                columns: new[] {"Id", "Description", "ImageUrl", "Name", "Slug"},
                 values: new object[,]
                 {
-                    { 1L, "Elektronik Eşyalar", "https://hermes-application-images.s3.eu-central-1.amazonaws.com/laptop.png", "Elektronik", "electronic" },
-                    { 2L, "Spor Outdoor Eşyaları", "https://hermes-application-images.s3.eu-central-1.amazonaws.com/camp.png", "Spor & Outdoor", "outdoor" },
-                    { 3L, "Motorsiklet, Bisiklet ve Arabalar", "https://hermes-application-images.s3.eu-central-1.amazonaws.com/vehicle.png", "Araç", "vehicles" },
-                    { 4L, "Ev & Bahçe Eşyaları", "https://hermes-application-images.s3.eu-central-1.amazonaws.com/garden.png", "Ev & Bahçe", "garden" },
-                    { 5L, "Moda ve Aksesuar Eşyaları", "https://hermes-application-images.s3.eu-central-1.amazonaws.com/fashion.png", "Moda & Aksesuarlar", "fashion-and-accessories" },
-                    { 6L, "Film & Kitap Eşyaları", "https://hermes-application-images.s3.eu-central-1.amazonaws.com/book.png", "Film & Kitap", "movies-and-books" },
-                    { 7L, "Diğer Eşyalar", "https://hermes-application-images.s3.eu-central-1.amazonaws.com/other.png", "Diğer", "others" }
+                    {
+                        1L, "Elektronik Eşyalar",
+                        "https://hermes-application-images.s3.eu-central-1.amazonaws.com/laptop.png", "Elektronik",
+                        "electronic"
+                    },
+                    {
+                        2L, "Spor Outdoor Eşyaları",
+                        "https://hermes-application-images.s3.eu-central-1.amazonaws.com/camp.png", "Spor & Outdoor",
+                        "outdoor"
+                    },
+                    {
+                        3L, "Motorsiklet, Bisiklet ve Arabalar",
+                        "https://hermes-application-images.s3.eu-central-1.amazonaws.com/vehicle.png", "Araç",
+                        "vehicles"
+                    },
+                    {
+                        4L, "Ev & Bahçe Eşyaları",
+                        "https://hermes-application-images.s3.eu-central-1.amazonaws.com/garden.png", "Ev & Bahçe",
+                        "garden"
+                    },
+                    {
+                        5L, "Moda ve Aksesuar Eşyaları",
+                        "https://hermes-application-images.s3.eu-central-1.amazonaws.com/fashion.png",
+                        "Moda & Aksesuarlar", "fashion-and-accessories"
+                    },
+                    {
+                        6L, "Film & Kitap Eşyaları",
+                        "https://hermes-application-images.s3.eu-central-1.amazonaws.com/book.png", "Film & Kitap",
+                        "movies-and-books"
+                    },
+                    {
+                        7L, "Diğer Eşyalar",
+                        "https://hermes-application-images.s3.eu-central-1.amazonaws.com/other.png", "Diğer", "others"
+                    }
                 });
         }
 

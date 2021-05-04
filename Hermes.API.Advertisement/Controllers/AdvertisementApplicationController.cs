@@ -32,12 +32,6 @@ namespace Hermes.API.Advertisement.Controllers
             return Ok(applications);
         }
 
-        [HttpPost("apply")]
-        public async Task<IActionResult> Apply([FromBody] AdvertisementApplicationDto advertisementApplicationDto)
-        {
-            var response = await _advertisementApplicationService.Apply(advertisementApplicationDto);
-            return Created("/v1/AdvertisementApplication", response);
-        }
 
         [HttpGet("{advertisementId}")]
         public async Task<IActionResult> Get(Guid advertisementId, [FromQuery] long applicantId)
@@ -47,6 +41,37 @@ namespace Hermes.API.Advertisement.Controllers
             if (advertisementApplication == null)
                 return NotFound();
             return Ok(advertisementApplication);
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(long id)
+        {
+            var advertisementApplication =
+                await _advertisementApplicationService.GetById(id);
+            if (advertisementApplication == null)
+                return NotFound();
+            return Ok(advertisementApplication);
+        }
+
+        [HttpPost("apply")]
+        public async Task<IActionResult> Apply([FromBody] AdvertisementApplicationDto advertisementApplicationDto)
+        {
+            var response = await _advertisementApplicationService.Apply(advertisementApplicationDto);
+            return Created("/v1/AdvertisementApplication", response);
+        }
+
+        [HttpPut("approve/{id}")]
+        public async Task<IActionResult> Approve(long id)
+        {
+            await _advertisementApplicationService.Approve(id);
+            return Ok();
+        }
+
+        [HttpPut("reject/{id}")]
+        public async Task<IActionResult> Reject(long id)
+        {
+            await _advertisementApplicationService.Reject(id);
+            return Ok();
         }
     }
 }

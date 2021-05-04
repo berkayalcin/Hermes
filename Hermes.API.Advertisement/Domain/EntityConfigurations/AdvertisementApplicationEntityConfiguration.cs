@@ -14,7 +14,7 @@ namespace Hermes.API.Advertisement.Domain.EntityConfigurations
                 .UseIdentityColumn()
                 .ValueGeneratedOnAdd()
                 .IsRequired();
-            builder.Property(p => p.EstimatedBarrowDays)
+            builder.Property(p => p.EstimatedBorrowDays)
                 .IsRequired();
 
             builder.Property(p => p.ApplicantId)

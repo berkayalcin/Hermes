@@ -39,7 +39,7 @@ namespace Hermes.API.Advertisement.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getutcdate()");
 
-                    b.Property<int>("EstimatedBarrowDays")
+                    b.Property<int>("EstimatedBorrowDays")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")

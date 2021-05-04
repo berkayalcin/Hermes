@@ -9,7 +9,8 @@ namespace Hermes.API.Advertisement.Domain.Repositories.AdvertisementApplication
         EfCoreBaseRepository<Entities.AdvertisementApplication, Guid, HermesDbContext>,
         IAdvertisementApplicationRepository
     {
-        public AdvertisementApplicationRepository(IConfiguration configuration, IServiceProvider serviceProvider) : base(configuration, serviceProvider)
+        public AdvertisementApplicationRepository(IConfiguration configuration, IServiceProvider serviceProvider) :
+            base(configuration, serviceProvider)
         {
         }
     }

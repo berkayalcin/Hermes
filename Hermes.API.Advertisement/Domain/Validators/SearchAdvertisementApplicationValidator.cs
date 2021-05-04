@@ -18,7 +18,7 @@ namespace Hermes.API.Advertisement.Domain.Validators
         {
             RuleFor(r => r.AdvertisementId).NotNull().NotEmpty();
             RuleFor(r => r.ApplicantId).NotNull().NotEmpty();
-            RuleFor(r => r.EstimatedBarrowDays).NotNull().NotEmpty().GreaterThan(0);
+            RuleFor(r => r.EstimatedBorrowDays).NotNull().NotEmpty().GreaterThan(0);
         }
     }
 }

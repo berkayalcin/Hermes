@@ -9,7 +9,7 @@ namespace Hermes.API.Advertisement.Domain.Requests
         public string Title { get; set; }
         public string Description { get; set; }
         public string DamageInformation { get; set; }
-        public int EstimatedBarrowDays { get; set; }
+        public int EstimatedBorrowDays { get; set; }
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public long UserId { get; set; }

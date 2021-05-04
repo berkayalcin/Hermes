@@ -127,13 +127,19 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
                                                          .Field(f => f.CategoryId)
                                                          .Value(searchAdvertisementRequest.CategoryId)
                                                  ) &&
+                                                 q.Term(c =>
+                                                     c
+                                                         .Boost(1.1)
+                                                         .Field(f => f.StatusId)
+                                                         .Value(searchAdvertisementRequest.StatusId)
+                                                 ) &&
                                                  q.Range(c => c
                                                      .Boost(1.1)
-                                                     .Field(p => p.EstimatedBarrowDays)
+                                                     .Field(p => p.EstimatedBorrowDays)
                                                      .GreaterThanOrEquals(searchAdvertisementRequest
-                                                         .EstimatedBarrowDaysMin)
+                                                         .EstimatedBorrowDaysMin)
                                                      .LessThanOrEquals(
-                                                         searchAdvertisementRequest.EstimatedBarrowDaysMax)
+                                                         searchAdvertisementRequest.EstimatedBorrowDaysMax)
                                                      .Relation(RangeRelation.Within)
                                                  );
 

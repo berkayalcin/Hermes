@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Transactions;
 using AutoMapper;
 using Hermes.API.Advertisement.Domain.Constants;
+using Hermes.API.Advertisement.Domain.Entities;
 using Hermes.API.Advertisement.Domain.Enums;
 using Hermes.API.Advertisement.Domain.Models;
+using Hermes.API.Advertisement.Domain.Proxies;
 using Hermes.API.Advertisement.Domain.Repositories.Advertisement;
 using Hermes.API.Advertisement.Domain.Repositories.AdvertisementApplication;
 using Hermes.API.Advertisement.Domain.Requests;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
 {
@@ -21,48 +25,56 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ISession _session;
         private readonly IMapper _mapper;
+        private readonly IUserApiProxy _userApiProxy;
 
         public AdvertisementApplicationService(IAdvertisementRepository advertisementRepository,
             IAdvertisementApplicationRepository advertisementApplicationRepository,
-            IHttpContextAccessor httpContextAccessor, IMapper mapper)
+            IHttpContextAccessor httpContextAccessor, IMapper mapper, IUserApiProxy userApiProxy)
         {
             _advertisementRepository = advertisementRepository;
             _advertisementApplicationRepository = advertisementApplicationRepository;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
+            _userApiProxy = userApiProxy;
             _session = httpContextAccessor.HttpContext!.Session;
         }
 
-        private bool IsSameUserOrAdmin(long dataOwnerId)
-        {
-            var id = long.Parse(_session.GetString(SessionClaimTypes.Id));
-            var role = _session.GetString(SessionClaimTypes.Role);
-            if (role.Equals(UserRoles.Administrator))
-                return true;
-            return id == dataOwnerId;
-        }
 
         public async Task<List<AdvertisementApplicationDto>> GetAll(
             SearchAdvertisementApplicationRequest searchAdvertisementApplicationRequest)
         {
-            var advertisement =
-                await _advertisementRepository.Get(searchAdvertisementApplicationRequest.AdvertisementId);
-            if (!IsSameUserOrAdmin(advertisement.UserId))
+            var queryable = _advertisementApplicationRepository
+                .GetQueryable()
+                .Where(q => q.AdvertisementId == searchAdvertisementApplicationRequest.AdvertisementId);
+
+            if (searchAdvertisementApplicationRequest.ApplicationStatusId.HasValue)
             {
-                throw new UnauthorizedAccessException();
+                queryable = queryable.Where(q =>
+                    q.StatusId == searchAdvertisementApplicationRequest.ApplicationStatusId.Value);
             }
 
+            var advertisementApplications = await queryable.ToListAsync();
+            var advertisementApplicationDtos =
+                _mapper.Map<List<AdvertisementApplicationDto>>(advertisementApplications);
+            foreach (var advertisementApplicationDto in advertisementApplicationDtos)
+            {
+                advertisementApplicationDto.Applicant =
+                    await _userApiProxy.GetUser(advertisementApplicationDto.ApplicantId);
+            }
 
-            throw new NotImplementedException();
+            return advertisementApplicationDtos;
         }
 
         public async Task<AdvertisementApplicationDto> GetById(long applicationId)
         {
             var advertisementApplication = await _advertisementApplicationRepository
                 .Get(a => a.Id == applicationId);
-            return advertisementApplication == null
-                ? null
-                : _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
+            if (advertisementApplication == null)
+                return null;
+            var advertisementApplicationDto = _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
+            advertisementApplicationDto.Applicant = await _userApiProxy.GetUser(advertisementApplication.ApplicantId);
+
+            return advertisementApplicationDto;
         }
 
         public async Task<AdvertisementApplicationDto> GetByAdvertisementIdAndApplicantId(Guid advertisementId,
@@ -72,9 +84,14 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
                 .Get(a =>
                     a.AdvertisementId == advertisementId &&
                     a.ApplicantId == applicantId);
-            return advertisementApplication == null
-                ? null
-                : _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
+            if (advertisementApplication == null)
+                return null;
+
+            var advertisementApplicationDto = _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
+            advertisementApplicationDto.Applicant =
+                await _userApiProxy.GetUser(advertisementApplicationDto.ApplicantId);
+
+            return advertisementApplicationDto;
         }
 
         public async Task<AdvertisementApplicationDto> Apply(AdvertisementApplicationDto advertisementApplicationDto)
@@ -85,7 +102,7 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
                 throw new InvalidOperationException("The Advertisement is not available to apply.");
             }
 
-            if (advertisement.EstimatedBarrowDays < advertisementApplicationDto.EstimatedBarrowDays)
+            if (advertisement.EstimatedBorrowDays < advertisementApplicationDto.EstimatedBorrowDays)
             {
                 throw new InvalidOperationException("The Barrow Day Cannot Be Greater Than Advertisement's Barrow Day");
             }
@@ -102,14 +119,51 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
             return _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
         }
 
-        public Task Approve(Guid applicationId)
+        public async Task Approve(long applicationId)
         {
-            throw new NotImplementedException();
+            var advertisementApplication = await _advertisementApplicationRepository.Get(a => a.Id == applicationId);
+            var advertisement = await _advertisementRepository.Get(advertisementApplication.AdvertisementId);
+            var advertisementApplications = await _advertisementApplicationRepository
+                .GetAll(a => a.Id != applicationId && a.AdvertisementId == advertisement.Id);
+
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            advertisementApplication.StatusId = (int) AdvertisementApplicationStatuses.Approved;
+            _advertisementApplicationRepository.Update(advertisementApplication);
+
+            foreach (var application in advertisementApplications)
+            {
+                application.StatusId = (int) AdvertisementApplicationStatuses.Rejected;
+                _advertisementApplicationRepository.Update(application);
+            }
+
+            advertisement.StatusId = (int) AdvertisementStatuses.Closed;
+            advertisement.EstimatedBorrowDate = DateTime.UtcNow.AddDays(advertisementApplication.EstimatedBorrowDays);
+
+            var borrowerUserDto = await _userApiProxy.GetUser(advertisementApplication.ApplicantId);
+            var borrowerUser = _mapper.Map<User>(borrowerUserDto);
+            advertisement.Borrower = borrowerUser;
+
+
+            await _advertisementRepository.Update(advertisement);
+
+            scope.Complete();
         }
 
-        public Task Reject(Guid applicationId)
+        public async Task Reject(long applicationId)
         {
-            throw new NotImplementedException();
+            var advertisementApplication = await _advertisementApplicationRepository.Get(a => a.Id == applicationId);
+            var advertisement = await _advertisementRepository.Get(advertisementApplication.AdvertisementId);
+
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            advertisementApplication.StatusId = (int) AdvertisementApplicationStatuses.Rejected;
+            _advertisementApplicationRepository.Update(advertisementApplication);
+
+            advertisement.StatusId = (int) AdvertisementStatuses.Created;
+            await _advertisementRepository.Update(advertisement);
+
+            scope.Complete();
         }
     }
 }
