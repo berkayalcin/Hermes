@@ -119,7 +119,23 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
             return _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
         }
 
-        public async Task Approve(long applicationId)
+        public async Task LenderApprove(long applicationId)
+        {
+            var advertisementApplication = await _advertisementApplicationRepository.Get(a => a.Id == applicationId);
+            var advertisement = await _advertisementRepository.Get(advertisementApplication.AdvertisementId);
+
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            advertisementApplication.StatusId = (int) AdvertisementApplicationStatuses.Approved;
+            _advertisementApplicationRepository.Update(advertisementApplication);
+
+            advertisement.StatusId = (int) AdvertisementStatuses.WaitingBorrowerApproval;
+            await _advertisementRepository.Update(advertisement);
+
+            scope.Complete();
+        }
+
+        public async Task BorrowerApprove(long applicationId)
         {
             var advertisementApplication = await _advertisementApplicationRepository.Get(a => a.Id == applicationId);
             var advertisement = await _advertisementRepository.Get(advertisementApplication.AdvertisementId);
@@ -128,7 +144,7 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
 
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-            advertisementApplication.StatusId = (int) AdvertisementApplicationStatuses.Approved;
+            advertisementApplication.StatusId = (int) AdvertisementApplicationStatuses.Delivered;
             _advertisementApplicationRepository.Update(advertisementApplication);
 
             foreach (var application in advertisementApplications)
@@ -150,7 +166,23 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
             scope.Complete();
         }
 
-        public async Task Reject(long applicationId)
+        public async Task LenderReject(long applicationId)
+        {
+            var advertisementApplication = await _advertisementApplicationRepository.Get(a => a.Id == applicationId);
+            var advertisement = await _advertisementRepository.Get(advertisementApplication.AdvertisementId);
+
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            advertisementApplication.StatusId = (int) AdvertisementApplicationStatuses.Rejected;
+            _advertisementApplicationRepository.Update(advertisementApplication);
+
+            advertisement.StatusId = (int) AdvertisementStatuses.Created;
+            await _advertisementRepository.Update(advertisement);
+
+            scope.Complete();
+        }
+
+        public async Task BorrowerReject(long applicationId)
         {
             var advertisementApplication = await _advertisementApplicationRepository.Get(a => a.Id == applicationId);
             var advertisement = await _advertisementRepository.Get(advertisementApplication.AdvertisementId);

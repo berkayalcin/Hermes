@@ -60,17 +60,31 @@ namespace Hermes.API.Advertisement.Controllers
             return Created("/v1/AdvertisementApplication", response);
         }
 
-        [HttpPut("approve/{id}")]
-        public async Task<IActionResult> Approve(long id)
+        [HttpPut("lender-approve/{id}")]
+        public async Task<IActionResult> LenderApprove(long id)
         {
-            await _advertisementApplicationService.Approve(id);
+            await _advertisementApplicationService.LenderApprove(id);
             return Ok();
         }
 
-        [HttpPut("reject/{id}")]
-        public async Task<IActionResult> Reject(long id)
+        [HttpPut("lender-reject/{id}")]
+        public async Task<IActionResult> LenderReject(long id)
         {
-            await _advertisementApplicationService.Reject(id);
+            await _advertisementApplicationService.LenderReject(id);
+            return Ok();
+        }
+        
+        [HttpPut("borrower-approve/{id}")]
+        public async Task<IActionResult> BorrowerApprove(long id)
+        {
+            await _advertisementApplicationService.BorrowerApprove(id);
+            return Ok();
+        }
+
+        [HttpPut("borrower-reject/{id}")]
+        public async Task<IActionResult> BorrowerReject(long id)
+        {
+            await _advertisementApplicationService.BorrowerReject(id);
             return Ok();
         }
     }

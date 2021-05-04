@@ -13,10 +13,13 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
 
         Task<AdvertisementApplicationDto> GetById(long applicationId);
         Task<AdvertisementApplicationDto> Apply(AdvertisementApplicationDto advertisementApplicationDto);
-        Task Approve(long applicationId);
-        Task Reject(long applicationId);
+        Task LenderApprove(long applicationId);
+        Task LenderReject(long applicationId);
 
         Task<AdvertisementApplicationDto> GetByAdvertisementIdAndApplicantId(Guid advertisementId,
             long applicantId);
+
+        Task BorrowerApprove(long applicationId);
+        Task BorrowerReject(long applicationId);
     }
 }

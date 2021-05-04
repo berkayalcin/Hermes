@@ -5,6 +5,8 @@ namespace Hermes.API.Advertisement.Domain.Enums
         Created = 1,
         WaitingLenderApproval = 2,
         Approved = 3,
-        Rejected = 4
+        Rejected = 4,
+        WaitingBorrowerApproval = 5,
+        Delivered = 6
     }
 }

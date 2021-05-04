@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Hermes.API.Advertisement.Domain.Enums;
 using Hermes.API.Advertisement.Domain.Proxies.Models;
 
 namespace Hermes.API.Advertisement.Domain.Models
@@ -23,6 +24,9 @@ namespace Hermes.API.Advertisement.Domain.Models
         public List<AdvertisementImageDto> Images { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? EstimatedBorrowDate { get; set; }
+
+        public int StatusId { get; set; }
+        public string Status => Enum.GetName(typeof(AdvertisementStatuses), StatusId);
         public bool IsDeleted { get; set; }
     }
 }
