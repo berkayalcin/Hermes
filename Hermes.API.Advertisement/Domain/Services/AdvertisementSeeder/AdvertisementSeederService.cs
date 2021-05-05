@@ -32,15 +32,22 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementSeeder
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _elasticSearchService.Remove(ElasticSearchConstants.AdvertisementsIndex);
-                _logger.LogInformation($"Seeder Service Has Started At {DateTime.UtcNow}");
-                var advertisements = await _advertisementRepository.GetAll();
-                if (advertisements.Any())
+                try
                 {
-                    await SeedAdvertisementsToElasticSearch(advertisements);
-                }
+                    await _elasticSearchService.Remove(ElasticSearchConstants.AdvertisementsIndex);
+                    _logger.LogInformation($"Seeder Service Has Started At {DateTime.UtcNow}");
+                    var advertisements = await _advertisementRepository.GetAll();
+                    if (advertisements.Any())
+                    {
+                        await SeedAdvertisementsToElasticSearch(advertisements);
+                    }
 
-                await Task.Delay(10000, stoppingToken);
+                    await Task.Delay(10000, stoppingToken);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e,e.Message);
+                }
             }
         }
 

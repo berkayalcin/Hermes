@@ -181,42 +181,6 @@ services:
           memory: 200M
         reservations:
           memory: 20M
-  advertisement-api-2:
-    container_name: advertisement-api-node-2
-    restart: always
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5022/healthcheck" ]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    depends_on:
-      - consul
-      - couchbase1
-      - couchbase2
-      - couchbase3
-      - es01
-    image: yalcinberkay/hermes-advertisement-api
-    build:
-      context: .
-      dockerfile: Dockerfile-Advertisement-API
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - SERVICE_URL=http://advertisement-api-2:5022
-    networks:
-      hermes-network:
-        ipv4_address: 172.16.101.17
-    ports:
-      - "5022:5022"
-    expose:
-      - "5022"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.75'
-          memory: 200M
-        reservations:
-          memory: 20M
   catalog-api-1:
     container_name: catalog-api-node-1
     restart: always
