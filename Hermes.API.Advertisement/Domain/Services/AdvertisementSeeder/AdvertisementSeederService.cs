@@ -30,6 +30,7 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementSeeder
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await Task.Delay(150000, stoppingToken);
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
