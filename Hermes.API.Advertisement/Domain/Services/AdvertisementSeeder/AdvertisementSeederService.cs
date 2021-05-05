@@ -37,7 +37,7 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementSeeder
                     await _elasticSearchService.Remove(ElasticSearchConstants.AdvertisementsIndex);
                     _logger.LogInformation($"Seeder Service Has Started At {DateTime.UtcNow}");
                     var advertisements = await _advertisementRepository.GetAll();
-                    if (advertisements.Any())
+                    if (advertisements != null && advertisements.Any())
                     {
                         await SeedAdvertisementsToElasticSearch(advertisements);
                     }
@@ -46,7 +46,8 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementSeeder
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e,e.Message);
+                    _logger.LogError(e, e.Message);
+                    await Task.Delay(45000, stoppingToken);
                 }
             }
         }
