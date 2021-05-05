@@ -19,6 +19,7 @@ using Hermes.API.Advertisement.Domain.Responses;
 using Hermes.API.Advertisement.Domain.Services.Advertisement;
 using Hermes.API.Advertisement.Domain.Services.AdvertisementApplication;
 using Hermes.API.Advertisement.Domain.Services.AdvertisementBucketProvider;
+using Hermes.API.Advertisement.Domain.Services.AdvertisementSeeder;
 using Hermes.API.Advertisement.Domain.Services.ElasticSearch;
 using Hermes.API.Advertisement.Domain.Validators;
 using Hermes.API.Advertisement.Extensions;
@@ -135,6 +136,9 @@ namespace Hermes.API.Advertisement
             // Session
             services.AddDistributedMemoryCache();
             services.AddSession();
+
+            // Hosted Services
+            services.AddHostedService<AdvertisementSeederService>();
         }
 
         private static void AddElastic(IServiceCollection services, IConfiguration configuration)

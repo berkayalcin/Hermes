@@ -49,7 +49,7 @@ namespace Hermes.API.Advertisement.Domain.Repositories.Advertisement
 
         public async Task<List<Entities.Advertisement>> GetAll()
         {
-            var operationResult = await _bucket.QueryAsync<Entities.Advertisement>("SELECT * FROM advertisements");
+            var operationResult = await _bucket.QueryAsync<Entities.Advertisement>("SELECT advertisements.* FROM advertisements");
             return operationResult.Success ? operationResult.Rows : null;
         }
 
