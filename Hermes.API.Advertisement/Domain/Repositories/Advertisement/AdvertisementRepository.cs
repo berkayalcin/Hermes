@@ -53,17 +53,17 @@ namespace Hermes.API.Advertisement.Domain.Repositories.Advertisement
             return operationResult.Success ? operationResult.Rows : null;
         }
 
-        private async Task<IDocumentResult<Entities.Advertisement>> Upsert(Entities.Advertisement parentPurchaseOrder)
+        private async Task<IDocumentResult<Entities.Advertisement>> Upsert(Entities.Advertisement advertisement)
         {
-            var document = BuildAdvertisementDocument(parentPurchaseOrder);
+            var document = BuildAdvertisementDocument(advertisement);
             return await _bucket.UpsertAsync(document);
         }
 
-        private static void EnsureSuccess(Entities.Advertisement parentPurchaseOrder, IResult result,
+        private static void EnsureSuccess(Entities.Advertisement advertisement, IResult result,
             string exceptionMessage)
         {
             if (result.Success) return;
-            var errorMessage = string.Format(exceptionMessage, parentPurchaseOrder.Id);
+            var errorMessage = string.Format(exceptionMessage, advertisement.Id);
             throw new Exception(errorMessage, result.Exception);
         }
 

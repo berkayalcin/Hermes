@@ -17,6 +17,7 @@ namespace Hermes.API.Advertisement.Domain.Mappers
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<AdvertisementImage, AdvertisementImageDto>().ReverseMap();
             CreateMap<AdvertisementApplication, AdvertisementApplicationDto>().ReverseMap();
+            CreateMap<UserReviewDto, UserReview>().ReverseMap();
         }
     }
 }

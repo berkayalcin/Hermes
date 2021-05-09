@@ -15,12 +15,14 @@ using Hermes.API.Advertisement.Domain.Models;
 using Hermes.API.Advertisement.Domain.Proxies;
 using Hermes.API.Advertisement.Domain.Repositories.Advertisement;
 using Hermes.API.Advertisement.Domain.Repositories.AdvertisementApplication;
+using Hermes.API.Advertisement.Domain.Repositories.UserReview;
 using Hermes.API.Advertisement.Domain.Responses;
 using Hermes.API.Advertisement.Domain.Services.Advertisement;
 using Hermes.API.Advertisement.Domain.Services.AdvertisementApplication;
 using Hermes.API.Advertisement.Domain.Services.AdvertisementBucketProvider;
 using Hermes.API.Advertisement.Domain.Services.AdvertisementSeeder;
 using Hermes.API.Advertisement.Domain.Services.ElasticSearch;
+using Hermes.API.Advertisement.Domain.Services.UserReview;
 using Hermes.API.Advertisement.Domain.Validators;
 using Hermes.API.Advertisement.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -122,10 +124,12 @@ namespace Hermes.API.Advertisement
             // Services
             services.AddScoped<IAdvertisementService, AdvertisementService>();
             services.AddScoped<IAdvertisementApplicationService, AdvertisementApplicationService>();
+            services.AddScoped<IUserReviewService, UserReviewService>();
 
             // Repositories
             services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
             services.AddScoped<IAdvertisementApplicationRepository, AdvertisementApplicationRepository>();
+            services.AddScoped<IUserReviewRepository, UserReviewRepository>();
 
             // Elastic Search
             AddElastic(services, Configuration);
@@ -221,7 +225,8 @@ namespace Hermes.API.Advertisement
                     };
                     client.OperationLifespan = 90000;
                 })
-                .AddCouchbaseBucket<IAdvertisementBucketProvider>("advertisements");
+                .AddCouchbaseBucket<IAdvertisementBucketProvider>("advertisements")
+                .AddCouchbaseBucket<IAdvertisementBucketProvider>("userreviews");
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }

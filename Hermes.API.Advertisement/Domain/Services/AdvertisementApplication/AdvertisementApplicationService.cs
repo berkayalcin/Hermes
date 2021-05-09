@@ -73,7 +73,6 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
                 return null;
             var advertisementApplicationDto = _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
             advertisementApplicationDto.Applicant = await _userApiProxy.GetUser(advertisementApplication.ApplicantId);
-
             return advertisementApplicationDto;
         }
 
@@ -135,6 +134,22 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
             scope.Complete();
         }
 
+        public async Task LenderReject(long applicationId)
+        {
+            var advertisementApplication = await _advertisementApplicationRepository.Get(a => a.Id == applicationId);
+            var advertisement = await _advertisementRepository.Get(advertisementApplication.AdvertisementId);
+
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            advertisementApplication.StatusId = (int) AdvertisementApplicationStatuses.Rejected;
+            _advertisementApplicationRepository.Update(advertisementApplication);
+
+            advertisement.StatusId = (int) AdvertisementStatuses.Created;
+            await _advertisementRepository.Update(advertisement);
+
+            scope.Complete();
+        }
+
         public async Task BorrowerApprove(long applicationId)
         {
             var advertisementApplication = await _advertisementApplicationRepository.Get(a => a.Id == applicationId);
@@ -166,7 +181,7 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
             scope.Complete();
         }
 
-        public async Task LenderReject(long applicationId)
+        public async Task BorrowerReject(long applicationId)
         {
             var advertisementApplication = await _advertisementApplicationRepository.Get(a => a.Id == applicationId);
             var advertisement = await _advertisementRepository.Get(advertisementApplication.AdvertisementId);
@@ -182,18 +197,26 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
             scope.Complete();
         }
 
-        public async Task BorrowerReject(long applicationId)
+        public async Task GivenBackToLender(long applicationId)
         {
             var advertisementApplication = await _advertisementApplicationRepository.Get(a => a.Id == applicationId);
-            var advertisement = await _advertisementRepository.Get(advertisementApplication.AdvertisementId);
 
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-            advertisementApplication.StatusId = (int) AdvertisementApplicationStatuses.Rejected;
+            advertisementApplication.StatusId = (int) AdvertisementApplicationStatuses.DeliveredBackToLender;
             _advertisementApplicationRepository.Update(advertisementApplication);
 
-            advertisement.StatusId = (int) AdvertisementStatuses.Created;
-            await _advertisementRepository.Update(advertisement);
+            scope.Complete();
+        }
+
+        public async Task LenderTookBack(long applicationId)
+        {
+            var advertisementApplication = await _advertisementApplicationRepository.Get(a => a.Id == applicationId);
+
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            advertisementApplication.StatusId = (int) AdvertisementApplicationStatuses.LenderTookItemBack;
+            _advertisementApplicationRepository.Update(advertisementApplication);
 
             scope.Complete();
         }

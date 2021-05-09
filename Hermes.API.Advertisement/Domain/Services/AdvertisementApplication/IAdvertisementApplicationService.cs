@@ -21,5 +21,7 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
 
         Task BorrowerApprove(long applicationId);
         Task BorrowerReject(long applicationId);
+        Task GivenBackToLender(long applicationId);
+        Task LenderTookBack(long applicationId);
     }
 }

@@ -73,7 +73,7 @@ namespace Hermes.API.Advertisement.Controllers
             await _advertisementApplicationService.LenderReject(id);
             return Ok();
         }
-        
+
         [HttpPut("borrower-approve/{id}")]
         public async Task<IActionResult> BorrowerApprove(long id)
         {
@@ -85,6 +85,20 @@ namespace Hermes.API.Advertisement.Controllers
         public async Task<IActionResult> BorrowerReject(long id)
         {
             await _advertisementApplicationService.BorrowerReject(id);
+            return Ok();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> GivenBackToLender(long id)
+        {
+            await _advertisementApplicationService.GivenBackToLender(id);
+            return Ok();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> LenderTookItemBack(long id)
+        {
+            await _advertisementApplicationService.LenderTookBack(id);
             return Ok();
         }
     }

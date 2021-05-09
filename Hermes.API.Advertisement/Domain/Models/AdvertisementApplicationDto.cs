@@ -15,5 +15,6 @@ namespace Hermes.API.Advertisement.Domain.Models
         public int StatusId { get; set; }
         public string Status => Enum.GetName(typeof(AdvertisementApplicationStatuses), StatusId);
         public bool IsDeleted { get; set; }
+        public bool CanReview => StatusId.Equals(AdvertisementApplicationStatuses.LenderTookItemBack);
     }
 }
