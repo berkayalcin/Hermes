@@ -23,6 +23,7 @@ using Hermes.API.Advertisement.Domain.Services.AdvertisementBucketProvider;
 using Hermes.API.Advertisement.Domain.Services.AdvertisementSeeder;
 using Hermes.API.Advertisement.Domain.Services.ElasticSearch;
 using Hermes.API.Advertisement.Domain.Services.UserReview;
+using Hermes.API.Advertisement.Domain.Services.UserReviewBucketProvider;
 using Hermes.API.Advertisement.Domain.Validators;
 using Hermes.API.Advertisement.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -226,7 +227,7 @@ namespace Hermes.API.Advertisement
                     client.OperationLifespan = 90000;
                 })
                 .AddCouchbaseBucket<IAdvertisementBucketProvider>("advertisements")
-                .AddCouchbaseBucket<IAdvertisementBucketProvider>("userreviews");
+                .AddCouchbaseBucket<IUserReviewBucketProvider>("userreviews");
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
