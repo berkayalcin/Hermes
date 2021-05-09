@@ -7,9 +7,10 @@ namespace Hermes.API.Advertisement.Domain.Models
     {
         public Guid Id { get; set; }
         public long ApplicationId { get; set; }
-        public long ApplicantId { get; set; }
-        public UserDto Lender { get; set; }
-        public UserDto Borrower { get; set; }
+        public long ReviewOwnerId { get; set; }
+        public long ReviewedUserId { get; set; }
+        public UserDto ReviewOwner { get; set; }
+        public UserDto ReviewedUser { get; set; }
         public AdvertisementDto Advertisement { get; set; }
         public string Review { get; set; }
         public int Stars { get; set; }

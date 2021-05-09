@@ -8,5 +8,6 @@ namespace Hermes.API.Advertisement.Domain.Services.UserReview
     {
         Task<UserReviewDto> Create(UserReviewDto userReviewDto);
         Task<List<UserReviewDto>> GetAllByUserId(long userId);
+        Task<bool> CheckCanReview(long ownerId, long applicationId);
     }
 }

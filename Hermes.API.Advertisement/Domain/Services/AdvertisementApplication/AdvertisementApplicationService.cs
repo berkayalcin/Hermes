@@ -73,6 +73,7 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
                 return null;
             var advertisementApplicationDto = _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
             advertisementApplicationDto.Applicant = await _userApiProxy.GetUser(advertisementApplication.ApplicantId);
+
             return advertisementApplicationDto;
         }
 
@@ -170,7 +171,7 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
 
             advertisement.StatusId = (int) AdvertisementStatuses.Closed;
             advertisement.EstimatedBorrowDate = DateTime.UtcNow.AddDays(advertisementApplication.EstimatedBorrowDays);
-
+            advertisement.GaveToBorrowerOnDate = DateTime.UtcNow;
             var borrowerUserDto = await _userApiProxy.GetUser(advertisementApplication.ApplicantId);
             var borrowerUser = _mapper.Map<User>(borrowerUserDto);
             advertisement.Borrower = borrowerUser;
@@ -217,6 +218,10 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
 
             advertisementApplication.StatusId = (int) AdvertisementApplicationStatuses.LenderTookItemBack;
             _advertisementApplicationRepository.Update(advertisementApplication);
+
+            var advertisement = await _advertisementRepository.Get(advertisementApplication.AdvertisementId);
+            advertisement.GaveToLenderBackOnDate = DateTime.UtcNow;
+            await _advertisementRepository.Update(advertisement);
 
             scope.Complete();
         }

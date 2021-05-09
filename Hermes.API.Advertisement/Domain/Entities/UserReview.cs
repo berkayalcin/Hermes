@@ -5,6 +5,7 @@ namespace Hermes.API.Advertisement.Domain.Entities
     public class UserReview : DocumentEntityBase<UserReview>
     {
         public Guid Id { get; set; }
+        public long ApplicationId { get; set; }
         public long ReviewOwnerId { get; set; }
         public long ReviewedUserId { get; set; }
         public User ReviewOwner { get; set; }

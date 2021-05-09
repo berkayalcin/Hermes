@@ -24,7 +24,7 @@ namespace Hermes.API.Advertisement.Domain.Entities
         public long UserId { get; set; }
         public User User { get; set; }
         public User Borrower { get; set; }
-        
+
 
         public long CategoryId { get; set; }
         public Category Category { get; set; }
@@ -33,6 +33,8 @@ namespace Hermes.API.Advertisement.Domain.Entities
         public List<AdvertisementReview> Reviews { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? EstimatedBorrowDate { get; set; }
+        public DateTime? GaveToBorrowerOnDate { get; set; }
+        public DateTime? GaveToLenderBackOnDate { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

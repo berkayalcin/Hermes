@@ -12,5 +12,6 @@ namespace Hermes.API.Advertisement.Domain.Repositories.UserReview
         Task<Entities.UserReview> Get(Guid id);
         Task<List<Entities.UserReview>> GetAll();
         Task<List<Entities.UserReview>> GetAllByOwnerId(long ownerId);
+        Task<List<Entities.UserReview>> GetAllByOwnerIdAndApplicationId(long ownerId, long applicationId);
     }
 }

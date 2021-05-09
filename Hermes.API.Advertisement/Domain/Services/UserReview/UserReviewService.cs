@@ -31,15 +31,40 @@ namespace Hermes.API.Advertisement.Domain.Services.UserReview
             _userApiProxy = userApiProxy;
         }
 
-        public async Task<UserReviewDto> Create(UserReviewDto userReviewDto)
+        public async Task<bool> CheckCanReview(long ownerId, long applicationId)
         {
             var advertisementApplication =
-                await _advertisementApplicationRepository.Get(g => g.Id == userReviewDto.ApplicationId);
-            if (advertisementApplication.StatusId != (int) AdvertisementApplicationStatuses.LenderTookItemBack)
+                await _advertisementApplicationRepository.Get(g => g.Id == applicationId);
+
+            var advertisement = await _advertisementRepository.Get(advertisementApplication.AdvertisementId);
+            if (advertisement.UserId != ownerId && advertisementApplication.ApplicantId != ownerId)
             {
-                throw new InvalidOperationException("Can't create review for this application");
+                return false;
             }
 
+            if (advertisementApplication.StatusId != (int) AdvertisementApplicationStatuses.LenderTookItemBack)
+            {
+                return false;
+            }
+
+            var byOwnerIdAndApplicationId = await _userReviewRepository.GetAllByOwnerIdAndApplicationId(ownerId,
+                applicationId);
+            var isUserReviewExists =
+                byOwnerIdAndApplicationId != null &&
+                byOwnerIdAndApplicationId.Count != 0;
+            return !isUserReviewExists;
+        }
+
+        public async Task<UserReviewDto> Create(UserReviewDto userReviewDto)
+        {
+            var canReview = await CheckCanReview(userReviewDto.ReviewOwnerId, userReviewDto.ApplicationId);
+            if (!canReview)
+            {
+                throw new InvalidOperationException("Can't review this application");
+            }
+
+            var advertisementApplication =
+                await _advertisementApplicationRepository.Get(g => g.Id == userReviewDto.ApplicationId);
             var advertisement = await _advertisementRepository.Get(advertisementApplication.AdvertisementId);
             var userReview = _mapper.Map<Entities.UserReview>(userReviewDto);
             userReview.Advertisement = advertisement;

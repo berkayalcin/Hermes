@@ -32,5 +32,12 @@ namespace Hermes.API.Advertisement.Controllers
                 return NotFound();
             return Ok(userReviews);
         }
+
+        [HttpGet("can-review/{ownerId}/{applicationId}")]
+        public async Task<IActionResult> Get(long ownerId, long applicationId)
+        {
+            var canReview = await _userReviewService.CheckCanReview(ownerId, applicationId);
+            return Ok(canReview);
+        }
     }
 }

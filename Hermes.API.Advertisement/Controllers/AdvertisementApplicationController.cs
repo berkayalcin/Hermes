@@ -88,14 +88,14 @@ namespace Hermes.API.Advertisement.Controllers
             return Ok();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("given-back-to-lender/{id}")]
         public async Task<IActionResult> GivenBackToLender(long id)
         {
             await _advertisementApplicationService.GivenBackToLender(id);
             return Ok();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("lender-took-item-back/{id}")]
         public async Task<IActionResult> LenderTookItemBack(long id)
         {
             await _advertisementApplicationService.LenderTookBack(id);
