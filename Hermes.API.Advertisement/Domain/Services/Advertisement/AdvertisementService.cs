@@ -133,12 +133,6 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
                                                          .Field(f => f.StatusId)
                                                          .Value(searchAdvertisementRequest.StatusId)
                                                  ) &&
-                                                 q.Term(c =>
-                                                     c
-                                                         .Boost(1.1)
-                                                         .Field(f => f.UserId)
-                                                         .Value(searchAdvertisementRequest.UserId)
-                                                 ) &&
                                                  q.Range(c => c
                                                      .Boost(1.1)
                                                      .Field(p => p.EstimatedBorrowDays)
@@ -148,6 +142,17 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
                                                          searchAdvertisementRequest.EstimatedBorrowDaysMax)
                                                      .Relation(RangeRelation.Within)
                                                  );
+
+                            if (searchAdvertisementRequest.UserId.HasValue)
+                            {
+                                queryContainer = queryContainer &&
+                                                 q.Term(c =>
+                                                     c
+                                                         .Boost(1.1)
+                                                         .Field(f => f.UserId)
+                                                         .Value(searchAdvertisementRequest.UserId)
+                                                 );
+                            }
 
                             if (searchAdvertisementRequest.Longitude.HasValue &&
                                 searchAdvertisementRequest.Latitude.HasValue)
