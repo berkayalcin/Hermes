@@ -44,8 +44,19 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
             SearchAdvertisementApplicationRequest searchAdvertisementApplicationRequest)
         {
             var queryable = _advertisementApplicationRepository
-                .GetQueryable()
-                .Where(q => q.AdvertisementId == searchAdvertisementApplicationRequest.AdvertisementId);
+                .GetQueryable();
+
+            if (searchAdvertisementApplicationRequest.AdvertisementId.HasValue)
+            {
+                queryable = queryable.Where(q =>
+                    q.AdvertisementId == searchAdvertisementApplicationRequest.AdvertisementId);
+            }
+
+            if (searchAdvertisementApplicationRequest.ApplicantId.HasValue)
+            {
+                queryable = queryable.Where(q =>
+                    q.ApplicantId == searchAdvertisementApplicationRequest.ApplicantId.Value);
+            }
 
             if (searchAdvertisementApplicationRequest.ApplicationStatusId.HasValue)
             {
