@@ -133,6 +133,12 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
                                                          .Field(f => f.StatusId)
                                                          .Value(searchAdvertisementRequest.StatusId)
                                                  ) &&
+                                                 q.Term(c =>
+                                                     c
+                                                         .Boost(1.1)
+                                                         .Field(f => f.UserId)
+                                                         .Value(searchAdvertisementRequest.UserId)
+                                                 ) &&
                                                  q.Range(c => c
                                                      .Boost(1.1)
                                                      .Field(p => p.EstimatedBorrowDays)
