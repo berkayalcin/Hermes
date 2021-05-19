@@ -78,5 +78,11 @@ namespace Hermes.API.Advertisement.Domain.Services.UserReview
             var userReviews = await _userReviewRepository.GetAllByOwnerId(userId);
             return userReviews == null ? null : _mapper.Map<List<UserReviewDto>>(userReviews);
         }
+
+        public async Task<List<UserReviewDto>> GetAllByReviewedUserId(long reviewedUserId)
+        {
+            var userReviews = await _userReviewRepository.GetAllByReviewedUserId(reviewedUserId);
+            return userReviews == null ? null : _mapper.Map<List<UserReviewDto>>(userReviews);
+        }
     }
 }

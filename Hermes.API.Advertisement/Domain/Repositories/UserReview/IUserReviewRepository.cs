@@ -13,5 +13,6 @@ namespace Hermes.API.Advertisement.Domain.Repositories.UserReview
         Task<List<Entities.UserReview>> GetAll();
         Task<List<Entities.UserReview>> GetAllByOwnerId(long ownerId);
         Task<List<Entities.UserReview>> GetAllByOwnerIdAndApplicationId(long ownerId, long applicationId);
+        Task<List<Entities.UserReview>> GetAllByReviewedUserId(long reviewedUserId);
     }
 }

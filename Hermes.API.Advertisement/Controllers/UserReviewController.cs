@@ -33,6 +33,15 @@ namespace Hermes.API.Advertisement.Controllers
             return Ok(userReviews);
         }
 
+        [HttpGet("byReviewedUserId/{reviewedUserId}")]
+        public async Task<IActionResult> GetByReviewedUserId(long reviewedUserId)
+        {
+            var userReviews = await _userReviewService.GetAllByReviewedUserId(reviewedUserId);
+            if (userReviews == null)
+                return NotFound();
+            return Ok(userReviews);
+        }
+
         [HttpGet("can-review/{ownerId}/{applicationId}")]
         public async Task<IActionResult> Get(long ownerId, long applicationId)
         {

@@ -94,6 +94,16 @@ namespace Hermes.API.Advertisement.Domain.Repositories.UserReview
             return operationResult.Success ? operationResult.Rows : null;
         }
 
+        public async Task<List<Entities.UserReview>> GetAllByReviewedUserId(long reviewedUserId)
+        {
+            var queryRequest = new QueryRequest()
+                .Statement("SELECT userreviews.* FROM userreviews where reviewedUserId=$1")
+                .AddPositionalParameter(reviewedUserId);
+
+            var operationResult = await _bucket.QueryAsync<Entities.UserReview>(queryRequest);
+            return operationResult.Success ? operationResult.Rows : null;
+        }
+
         public async Task<List<Entities.UserReview>> GetAllByOwnerIdAndApplicationId(long ownerId, long applicationId)
         {
             var queryRequest = new QueryRequest()
