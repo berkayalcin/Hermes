@@ -71,6 +71,8 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
             {
                 advertisementApplicationDto.Applicant =
                     await _userApiProxy.GetUser(advertisementApplicationDto.ApplicantId);
+                var advertisement = await _advertisementRepository.Get(advertisementApplicationDto.AdvertisementId);
+                advertisementApplicationDto.Advertisement = _mapper.Map<AdvertisementDto>(advertisement);
             }
 
             return advertisementApplicationDtos;
@@ -84,7 +86,8 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
                 return null;
             var advertisementApplicationDto = _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
             advertisementApplicationDto.Applicant = await _userApiProxy.GetUser(advertisementApplication.ApplicantId);
-
+            var advertisement = await _advertisementRepository.Get(advertisementApplicationDto.AdvertisementId);
+            advertisementApplicationDto.Advertisement = _mapper.Map<AdvertisementDto>(advertisement);
             return advertisementApplicationDto;
         }
 
@@ -101,7 +104,8 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementApplication
             var advertisementApplicationDto = _mapper.Map<AdvertisementApplicationDto>(advertisementApplication);
             advertisementApplicationDto.Applicant =
                 await _userApiProxy.GetUser(advertisementApplicationDto.ApplicantId);
-
+            var advertisement = await _advertisementRepository.Get(advertisementApplicationDto.AdvertisementId);
+            advertisementApplicationDto.Advertisement = _mapper.Map<AdvertisementDto>(advertisement);
             return advertisementApplicationDto;
         }
 

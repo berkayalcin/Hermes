@@ -12,6 +12,8 @@ namespace Hermes.API.Advertisement.Domain.Models
         public UserDto Applicant { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid AdvertisementId { get; set; }
+
+        public AdvertisementDto Advertisement { get; set; }
         public int StatusId { get; set; }
         public string Status => Enum.GetName(typeof(AdvertisementApplicationStatuses), StatusId);
         public bool IsDeleted { get; set; }
