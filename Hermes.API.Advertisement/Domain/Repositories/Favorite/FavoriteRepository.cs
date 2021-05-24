@@ -63,6 +63,7 @@ namespace Hermes.API.Advertisement.Domain.Repositories.Favorite
 
         public async Task<Entities.Favorite> Insert(Entities.Favorite favorite)
         {
+            favorite.Created = DateTime.UtcNow;
             var result = await Upsert(favorite);
             EnsureSuccess(favorite, result, ExceptionMessages.FavoriteCouldNotBeInserted);
             return result.Content;
@@ -70,6 +71,7 @@ namespace Hermes.API.Advertisement.Domain.Repositories.Favorite
 
         public async Task<Entities.Favorite> Update(Entities.Favorite favorite)
         {
+            favorite.Updated = DateTime.UtcNow;
             var result = await Upsert(favorite);
             EnsureSuccess(favorite, result, ExceptionMessages.FavoriteCouldNotBeUpdated);
             return result.Content;

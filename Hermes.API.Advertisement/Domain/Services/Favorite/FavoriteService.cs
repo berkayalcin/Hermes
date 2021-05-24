@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Hermes.API.Advertisement.Domain.Models;
+using Hermes.API.Advertisement.Domain.Proxies;
+using Hermes.API.Advertisement.Domain.Repositories.Advertisement;
 using Hermes.API.Advertisement.Domain.Repositories.Favorite;
 
 namespace Hermes.API.Advertisement.Domain.Services.Favorite
@@ -10,11 +12,16 @@ namespace Hermes.API.Advertisement.Domain.Services.Favorite
     {
         private readonly IFavoriteRepository _favoriteRepository;
         private readonly IMapper _mapper;
+        private readonly IAdvertisementRepository _advertisementRepository;
+        private readonly IUserApiProxy _userApiProxy;
 
-        public FavoriteService(IFavoriteRepository favoriteRepository, IMapper mapper)
+        public FavoriteService(IFavoriteRepository favoriteRepository, IMapper mapper,
+            IAdvertisementRepository advertisementRepository, IUserApiProxy userApiProxy)
         {
             _favoriteRepository = favoriteRepository;
             _mapper = mapper;
+            _advertisementRepository = advertisementRepository;
+            _userApiProxy = userApiProxy;
         }
 
         public async Task<List<FavoriteDto>> GetAllByUserId(long userId)
@@ -26,7 +33,9 @@ namespace Hermes.API.Advertisement.Domain.Services.Favorite
         public async Task<FavoriteDto> AddToFavorites(FavoriteDto favoriteDto)
         {
             await _favoriteRepository.DeleteByUserIdAndAdvertisementId(favoriteDto.UserId, favoriteDto.AdvertisementId);
+            favoriteDto.User = await _userApiProxy.GetUser(favoriteDto.UserId);
             var favorite = _mapper.Map<Entities.Favorite>(favoriteDto);
+            favorite.Advertisement = await _advertisementRepository.Get(favorite.AdvertisementId);
             return _mapper.Map<FavoriteDto>(await _favoriteRepository.Insert(favorite));
         }
 
