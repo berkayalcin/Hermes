@@ -11,5 +11,10 @@ namespace Hermes.API.Advertisement.Domain.Constants
         public const string UserReviewCouldNotBeInserted = "User Review Could Not Be Inserted";
         public const string UserReviewCouldNotBeUpdated = "User Review Could Not Be Updated";
         public const string UserReviewCouldNotBeDeletedWithId = "User Review Could Not Be Deleted With Id {0}";
+
+        public const string FavoriteCouldNotBeInserted = "Favorite Could Not Be Inserted";
+        public const string FavoriteCouldNotBeUpdated = "Favorite Could Not Be Updated";
+        public const string FavoriteCouldNotBeDeletedWithId = "Favorite Could Not Be Deleted With Id {0}";
+        public const string FavoriteCouldNotBeDeleted = "Favorite Could Not Be Deleted";
     }
 }
