@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Hermes.API.Advertisement.Domain.Authentication;
 using Hermes.API.Advertisement.Domain.Models;
@@ -35,6 +36,18 @@ namespace Hermes.API.Advertisement.Controllers
         {
             var favorites = await _favoriteService.GetAllByUserId(userId);
             if (favorites == null || favorites.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(favorites);
+        }
+
+        [HttpGet("byUserId/{userId}")]
+        public async Task<IActionResult> Get(long userId, Guid advertisementId)
+        {
+            var favorites = await _favoriteService.GetByUserIdAndAdvertisementId(userId, advertisementId);
+            if (favorites == null)
             {
                 return NotFound();
             }

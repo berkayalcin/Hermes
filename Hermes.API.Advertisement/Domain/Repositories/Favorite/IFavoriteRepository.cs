@@ -12,5 +12,6 @@ namespace Hermes.API.Advertisement.Domain.Repositories.Favorite
         Task Delete(Guid id);
         Task<Entities.Favorite> GetByUserIdAndAdvertisementId(long userId, Guid advertisementId);
         Task DeleteByUserIdAndAdvertisementId(long userId, Guid advertisementId);
+        Task<Entities.Favorite> GetByUserIdAndAdvertisementId(long userId, string advertisementId);
     }
 }

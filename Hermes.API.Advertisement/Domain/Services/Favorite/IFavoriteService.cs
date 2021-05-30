@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hermes.API.Advertisement.Domain.Models;
@@ -9,5 +10,6 @@ namespace Hermes.API.Advertisement.Domain.Services.Favorite
         Task<List<FavoriteDto>> GetAllByUserId(long userId);
         Task<FavoriteDto> AddToFavorites(FavoriteDto favoriteDto);
         Task RemoveFromFavorites(FavoriteDto favoriteDto);
+        Task<FavoriteDto> GetByUserIdAndAdvertisementId(long userId, Guid advertisementId);
     }
 }

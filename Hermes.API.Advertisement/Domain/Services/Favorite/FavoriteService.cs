@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -28,6 +29,12 @@ namespace Hermes.API.Advertisement.Domain.Services.Favorite
         {
             var favorites = await _favoriteRepository.GetAllByUserId(userId);
             return favorites == null ? null : _mapper.Map<List<FavoriteDto>>(favorites);
+        }
+
+        public async Task<FavoriteDto> GetByUserIdAndAdvertisementId(long userId, Guid advertisementId)
+        {
+            var favorite = await _favoriteRepository.GetByUserIdAndAdvertisementId(userId, advertisementId);
+            return favorite == null ? null : _mapper.Map<FavoriteDto>(favorite);
         }
 
         public async Task<FavoriteDto> AddToFavorites(FavoriteDto favoriteDto)

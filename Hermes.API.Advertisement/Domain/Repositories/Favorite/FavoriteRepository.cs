@@ -29,6 +29,17 @@ namespace Hermes.API.Advertisement.Domain.Repositories.Favorite
             return operationResult.Success ? operationResult.Rows : null;
         }
 
+        public async Task<Entities.Favorite> GetByUserIdAndAdvertisementId(long userId, string advertisementId)
+        {
+            var queryRequest = new QueryRequest()
+                .Statement("SELECT favorites.* FROM favorites where userId=$1 and advertisementId=$2")
+                .AddPositionalParameter(userId)
+                .AddPositionalParameter(advertisementId);
+
+            var operationResult = await _bucket.QueryAsync<Entities.Favorite>(queryRequest);
+            return operationResult.Success ? operationResult.Rows.FirstOrDefault() : null;
+        }
+
         public async Task<Entities.Favorite> GetByUserIdAndAdvertisementId(long userId, Guid advertisementId)
         {
             var queryRequest = new QueryRequest()
