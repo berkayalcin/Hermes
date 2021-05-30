@@ -43,7 +43,7 @@ namespace Hermes.API.Advertisement.Controllers
             return Ok(favorites);
         }
 
-        [HttpGet("byUserId/{userId}")]
+        [HttpGet("byUserIdAndAdvertisementId/{userId}")]
         public async Task<IActionResult> Get(long userId, Guid advertisementId)
         {
             var favorites = await _favoriteService.GetByUserIdAndAdvertisementId(userId, advertisementId);
