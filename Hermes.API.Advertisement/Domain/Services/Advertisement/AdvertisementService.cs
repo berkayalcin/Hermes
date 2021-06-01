@@ -162,12 +162,13 @@ namespace Hermes.API.Advertisement.Domain.Services.Advertisement
                                            g
                                                .Boost(1.1)
                                                .Field(p => p.Location)
-                                               .DistanceType(GeoDistanceType.Plane)
+                                               .DistanceType(GeoDistanceType.Arc)
                                                .Location(
                                                    searchAdvertisementRequest.Latitude.Value,
                                                    searchAdvertisementRequest.Longitude.Value
                                                )
                                                .Distance(new Distance(10, DistanceUnit.Kilometers))
+                                               .ValidationMethod(GeoValidationMethod.IgnoreMalformed)
                                        );
                             }
 
