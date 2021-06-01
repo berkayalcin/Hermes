@@ -17,5 +17,7 @@ namespace Hermes.API.Advertisement.Domain.Services.ElasticSearch
 
         Task<ISearchResponse<T>> Search<T>(Func<SearchDescriptor<T>, ISearchRequest> searchDescriptor)
             where T : class;
+
+        Task Purge<T>(string indexName) where T : class;
     }
 }

@@ -71,6 +71,14 @@ namespace Hermes.API.Advertisement.Domain.Services.ElasticSearch
             }
         }
 
+        public async Task Purge<T>(string indexName) where T : class
+        {
+            await Client.DeleteByQueryAsync<T>(del => del
+                .Index(indexName)
+                .Query(q => q.QueryString(qs => qs.Query("*")))
+            );
+        }
+
         public async Task Remove(string indexName)
         {
             await Client.Indices.DeleteAsync(indexName);

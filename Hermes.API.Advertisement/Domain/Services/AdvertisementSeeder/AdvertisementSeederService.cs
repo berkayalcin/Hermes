@@ -35,7 +35,8 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementSeeder
             {
                 try
                 {
-                    await _elasticSearchService.Remove(ElasticSearchConstants.AdvertisementsIndex);
+                    await _elasticSearchService.Purge<Entities.Advertisement>(
+                        ElasticSearchConstants.AdvertisementsIndex);
                     _logger.LogInformation($"Seeder Service Has Started At {DateTime.UtcNow}");
                     var advertisements = await _advertisementRepository.GetAll();
                     if (advertisements != null && advertisements.Any())
