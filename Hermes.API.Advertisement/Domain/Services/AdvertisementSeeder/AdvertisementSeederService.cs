@@ -44,7 +44,7 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementSeeder
                         await SeedAdvertisementsToElasticSearch(advertisements);
                     }
 
-                    await Task.Delay(10000, stoppingToken);
+                    await Task.Delay(60000, stoppingToken);
                 }
                 catch (Exception e)
                 {
