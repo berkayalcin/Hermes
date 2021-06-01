@@ -42,7 +42,7 @@ namespace Hermes.API.Advertisement.Domain.Services.AdvertisementSeeder
                 {
                     await DoWork();
 
-                    await Task.Delay(300000, stoppingToken);
+                    await Task.Delay(600000, stoppingToken);
                 }
                 catch (Exception e)
                 {
