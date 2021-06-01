@@ -1,9 +1,11 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Hermes.API.Advertisement.Domain.Authentication;
 using Hermes.API.Advertisement.Domain.Constants;
 using Hermes.API.Advertisement.Domain.Requests;
 using Hermes.API.Advertisement.Domain.Services.Advertisement;
+using Hermes.API.Advertisement.Domain.Services.AdvertisementSeeder;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hermes.API.Advertisement.Controllers
@@ -13,10 +15,13 @@ namespace Hermes.API.Advertisement.Controllers
     public class AdvertisementController : Controller
     {
         private readonly IAdvertisementService _advertisementService;
+        private readonly IAdvertisementSeederService _advertisementSeederService;
 
-        public AdvertisementController(IAdvertisementService advertisementService)
+        public AdvertisementController(IAdvertisementService advertisementService,
+            IAdvertisementSeederService advertisementSeederService)
         {
             _advertisementService = advertisementService;
+            _advertisementSeederService = advertisementSeederService;
         }
 
         [HttpPost]
@@ -64,6 +69,13 @@ namespace Hermes.API.Advertisement.Controllers
             }
 
             return Ok(advertisement);
+        }
+
+        [HttpPost("seed")]
+        public async Task<IActionResult> Seed()
+        {
+            await _advertisementSeederService.DoWork();
+            return Ok();
         }
     }
 }

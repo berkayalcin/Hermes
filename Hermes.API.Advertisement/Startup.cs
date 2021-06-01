@@ -130,6 +130,7 @@ namespace Hermes.API.Advertisement
             services.AddScoped<IAdvertisementApplicationService, AdvertisementApplicationService>();
             services.AddScoped<IUserReviewService, UserReviewService>();
             services.AddScoped<IFavoriteService, FavoriteService>();
+            services.AddScoped<IAdvertisementSeederService, AdvertisementSeederService>();
 
             // Repositories
             services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
