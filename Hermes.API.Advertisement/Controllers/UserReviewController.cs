@@ -46,7 +46,12 @@ namespace Hermes.API.Advertisement.Controllers
         public async Task<IActionResult> Get(long ownerId, long applicationId)
         {
             var canReview = await _userReviewService.CheckCanReview(ownerId, applicationId);
-            return Ok(canReview);
+            if (!canReview)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
     }
 }
