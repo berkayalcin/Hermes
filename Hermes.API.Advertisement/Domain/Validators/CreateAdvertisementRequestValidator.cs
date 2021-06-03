@@ -8,7 +8,7 @@ namespace Hermes.API.Advertisement.Domain.Validators
         public CreateAdvertisementRequestValidator()
         {
             RuleFor(r => r.Title).NotNull().NotEmpty();
-            RuleFor(r => r.Description).NotEmpty().NotNull().MinimumLength(50).MaximumLength(1000);
+            RuleFor(r => r.Description).NotEmpty().NotNull().MinimumLength(10).MaximumLength(1000);
             RuleFor(r => r.UserId).NotNull().NotEmpty();
             RuleFor(r => r.CategoryId).NotNull().NotEmpty();
             RuleFor(r => r.EstimatedBorrowDays).NotNull().NotEmpty();
